@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <ListPreference android:entryValues="@array/notificationOptionsValues" android:entries="@array/notificationOptions" android:positiveButtonText="@android:string/ok" android:negativeButtonText="@android:string/cancel" android:title="@string/settings_notification" android:dialogTitle="@string/settings_notification" android:key="notifications" android:defaultValue="0"/>
+    
+
+</PreferenceScreen>
