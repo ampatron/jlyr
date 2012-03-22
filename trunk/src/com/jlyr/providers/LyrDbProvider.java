@@ -1,7 +1,12 @@
 package com.jlyr.providers;
 
+import com.jlyr.util.GenericHandler;
 import com.jlyr.util.Track;
 
+import edu.gvsu.masl.asynchttp.HttpConnection;
+
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 public class LyrDbProvider extends LyricsProvider {
@@ -15,29 +20,74 @@ public class LyrDbProvider extends LyricsProvider {
 	}
 	
 	@Override
-	public String getLyrics() {
+	public void loadLyrics(GenericHandler _handler) {
+		mHandler = _handler;
+		
 		String firstUrl = "http://webservices.lyrdb.com/lookup.php?q=" + 
 					enc(mTrack.getArtist() + "|" + mTrack.getTitle()) + 
 					"&for=match&agent=llyrics";
-		String response = getUrl(firstUrl);
 		
-		if (response == null) {
-			return null;
-		}
-		
-		int end = response.indexOf("\\");
-		if (end == -1) {
-			return null;
-		}
-		String lyricsid = response.substring(0, end);
-		Log.i(TAG, "LyrDB id is: " + lyricsid);
-		String secondUrl = "http://www.lyrdb.com/getlyr.php?q=" + enc(lyricsid);
-		
-		String lyrics = getUrl(secondUrl);
-		return lyrics;
+		Handler handler = new Handler() {
+			public void handleMessage(Message message) {
+				switch (message.what) {
+				case HttpConnection.DID_START: {
+					Log.i(TAG, "Getting lyrics id...");
+					break;
+				}
+				case HttpConnection.DID_SUCCEED: {
+					String response = (String) message.obj;
+					int end = response.indexOf("\\");
+					if (end == -1) {
+						mLyrics = null;
+						mHandler.handleSuccess();
+					}
+					
+					String lyricsid = response.substring(0, end);
+					Log.i(TAG, "LyrDB id is: " + lyricsid);
+					getSecondUrl(lyricsid);
+					break;
+				}
+				case HttpConnection.DID_ERROR: {
+					Exception e = (Exception) message.obj;
+					// TODO: try e.toString() maybe it gives more detail about the error
+					// Otherwise find a way to use printStackTrace()
+					Log.e(TAG, "Error: " + e.getMessage());
+					break;
+				}
+				}
+			}
+		};
+		new HttpConnection(handler).get(firstUrl);
+		Log.v(TAG, "Fetching first url: " + firstUrl);
 	}
 	
-	public String toString() {
-		return mSource;
+	private void getSecondUrl(String lyricsid) {
+		String secondUrl = "http://www.lyrdb.com/getlyr.php?q=" + enc(lyricsid);
+		
+		Handler handler = new Handler() {
+			public void handleMessage(Message message) {
+				switch (message.what) {
+				case HttpConnection.DID_START: {
+					Log.i(TAG, "Getting lyrics...");
+					break;
+				}
+				case HttpConnection.DID_SUCCEED: {
+					String response = (String) message.obj;
+					mLyrics = response;
+					mHandler.handleSuccess();
+					break;
+				}
+				case HttpConnection.DID_ERROR: {
+					Exception e = (Exception) message.obj;
+					// TODO: try e.toString() maybe it gives more detail about the error
+					// Otherwise find a way to use printStackTrace()
+					Log.e(TAG, "Error: " + e.getMessage());
+					break;
+				}
+				}
+			}
+		};
+		new HttpConnection(handler).get(secondUrl);
+		Log.v(TAG, "Fetching second url: " + secondUrl);
 	}
 }

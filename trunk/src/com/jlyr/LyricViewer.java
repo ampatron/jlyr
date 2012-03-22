@@ -8,12 +8,15 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 
 import com.jlyr.util.InternalTrackTransmitter;
+import com.jlyr.util.GenericHandler;
 import com.jlyr.util.Track;
 import com.jlyr.util.Lyrics;
 
 public class LyricViewer extends Activity {
 	
 	TextView mText = null;
+	Track mTrack = null;
+	Lyrics mLyrics = null;
 	
 	public static final String TAG = "JLyrViewer"; 
 	
@@ -30,23 +33,28 @@ public class LyricViewer extends Activity {
     }
     
     private void fillLyrics() {
-    	Track track = getTrackFromIntent();
-    	if (track == null) {
-    		track = getPlayingTrack();
+    	mTrack = getTrackFromIntent();
+    	if (mTrack == null) {
+    		mTrack = getPlayingTrack();
     		
-    		if (track == null) {
+    		if (mTrack == null) {
     			mText.setText(getText(R.string.no_track_specified));
     			return;
     		}
     	}
     	
-    	Lyrics lyrics = new Lyrics(track);
-        lyrics.loadLyrics();
-        
-        String trackInfoStr = track.getArtist() + " - " + track.getTitle();
-        String lyricsStr = lyrics.getLyrics();
-        
-        mText.setText(trackInfoStr + "\n" + ((lyricsStr == null)? getText(R.string.lyrics_not_found) : lyricsStr));
+    	String trackInfoStr = mTrack.getArtist() + " - " + mTrack.getTitle();
+    	mText.setText("Loading lyrics for " + trackInfoStr + " ...");
+    	
+    	mLyrics = new Lyrics(mTrack);
+        mLyrics.loadLyrics(new GenericHandler() {
+        	public void handleSuccess() {
+        		String trackInfoStr = mTrack.getArtist() + " - " + mTrack.getTitle();
+                String lyricsStr = mLyrics.getLyrics();
+                
+                mText.setText(trackInfoStr + "\n" + ((lyricsStr == null)? getText(R.string.lyrics_not_found) : lyricsStr));
+        	}
+        });
     }
     
     private Track getTrackFromIntent() {

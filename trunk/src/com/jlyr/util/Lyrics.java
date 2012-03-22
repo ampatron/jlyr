@@ -7,6 +7,7 @@ public class Lyrics {
 	LyricReader mReader = null;
 	LyricFetcher mFetcher = null;
 	String mLyrics = null;
+	GenericHandler mLyrHandler = null;
 	
 	public static final String TAG = "JLyrLyrics";
 	
@@ -18,17 +19,29 @@ public class Lyrics {
 	}
 	
 	public void loadLyrics() {
+		loadLyrics(new GenericHandler());
+	}
+	
+	public void loadLyrics(GenericHandler lyr_handler) {
 		String[] content = mReader.getContent();
-		String trackInfo = content[0];
 		mLyrics = content[1];
+		mLyrHandler = lyr_handler;
 		
 		if (mLyrics == null) {
 	    	Log.i(TAG, "Lyrics not found on disk. Fetching...");
-	        mLyrics = mFetcher.fetchLyrics();
-	        
-	        if (mLyrics != null) {
-	        	mReader.save(mLyrics);
-	        }
+	        mFetcher.fetchLyrics(new GenericHandler() {
+	        	public void handleSuccess() {
+	        		String lyrics = mFetcher.getResponse();
+	        		if (lyrics != null) {
+	    	        	mReader.save(lyrics);
+	    	        	String[] content = mReader.getContent();
+	    	    		mLyrics = content[1];
+	    	        	mLyrHandler.handleSuccess();
+	    	        }
+	        	}
+	        });
+		} else {
+			mLyrHandler.handleSuccess();
 		}
 	}
 	

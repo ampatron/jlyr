@@ -6,45 +6,74 @@ import com.jlyr.providers.*;
 
 public class LyricFetcher {
 
-	LyricsProvider mProvider = null;
+	LyricsProvider[] mProviders = null;
+	int mProviderIndex = 0;
+	
 	Track mTrack = null;
+	String mResponse = null;
+	GenericHandler mHandler = null;
 	
 	public static final String TAG = "JLyrFetcher";
 	
 	public LyricFetcher(Track track) {
 		mTrack = track;
+		loadProviders(null);
 	}
 	
 	public LyricFetcher(Track track, String source) {
 		mTrack = track;
-		if (source == "ChartLyrics") {
-			mProvider = new ChartLyricsProvider(mTrack);
+		loadProviders(source);
+	}
+	
+	private void loadProviders(String source) {
+		if (source == null) {
+			mProviders = new LyricsProvider[] {
+					new DummyProvider(mTrack),
+					new LyrDbProvider(mTrack),
+					new ChartLyricsProvider(mTrack)};
+		} else if (source == "ChartLyrics") {
+			mProviders = new LyricsProvider[] {
+					new ChartLyricsProvider(mTrack)};
 		} else if (source == "LyrDB") {
-			mProvider = new LyrDbProvider(mTrack);
-		} else if (source != null) {
-			Log.w(TAG, "Got an unkown source " + source + ". Using default.");
-			mProvider = new LyrDbProvider(mTrack);
+			mProviders = new LyricsProvider[] {
+					new LyrDbProvider(mTrack)};
+		} else {
+			Log.w(TAG, "Got an unkown source <" + source + ">. Using default.");
+			mProviders = new LyricsProvider[] {
+					new LyrDbProvider(mTrack)};
 		}
 	}
 	
-	public String fetchLyrics() {
-		String response = null;
-		if (mProvider != null) {
-			response = mProvider.getLyrics();
-		} else {
-			LyricsProvider[] providers = new LyricsProvider[] {
-					new LyrDbProvider(mTrack),
-					new ChartLyricsProvider(mTrack)};
-			for (int i=0; i<providers.length; i++) {
-				Log.d(TAG, "Trying provider " + providers[i].toString());
-				response = providers[i].getLyrics();
-				if (response == null) {
-					Log.w(TAG, "Got a null response from " + providers[i].toString());
-				} else {
-					break;
-				}
-			}
+	public void fetchLyrics(GenericHandler _handler) {
+		mHandler = _handler;
+		mProviderIndex = -1;
+		
+		useNextProvider();
+	}
+	
+	private void useNextProvider() {
+		mProviderIndex++;
+		if (mProviderIndex >= mProviders.length) {
+			mHandler.handleSuccess();
+			return;
 		}
-		return response;
+		
+		LyricsProvider provider = mProviders[mProviderIndex];
+		Log.d(TAG, "Trying provider " + provider.getSource());
+		
+		provider.loadLyrics(new GenericHandler() {
+        	public void handleSuccess() {
+        		mResponse = mProviders[mProviderIndex].getLyrics();
+        		if (mResponse == null) {
+        			useNextProvider();
+        		} else {
+        			mHandler.handleSuccess();
+        		}
+        	}
+        });
+	}
+	
+	public String getResponse() {
+		return mResponse;
 	}
 }

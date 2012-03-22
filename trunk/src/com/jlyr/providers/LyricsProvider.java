@@ -12,12 +12,15 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
+import com.jlyr.util.GenericHandler;
 import com.jlyr.util.Track;
 
 public class LyricsProvider {
 	
 	String mSource = "GenericSource";
 	Track mTrack = null;
+	String mLyrics = null;
+	GenericHandler mHandler = null;
 	
 	public static final String TAG = "JLyrProvider";
 	
@@ -30,7 +33,12 @@ public class LyricsProvider {
 	}
 	
 	public String getLyrics() {
-		return null;
+		return mLyrics;
+	}
+	
+	public void loadLyrics(GenericHandler _handler) {
+		mHandler = _handler;
+		mHandler.handleSuccess();
 	}
 
 	protected String getUrl(String uri) {

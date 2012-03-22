@@ -15,8 +15,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.jlyr.util.GenericHandler;
 import com.jlyr.util.Track;
 
+import edu.gvsu.masl.asynchttp.HttpConnection;
+
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 public class ChartLyricsProvider extends LyricsProvider {
@@ -30,12 +35,37 @@ public class ChartLyricsProvider extends LyricsProvider {
 	}
 	
 	@Override
-	public String getLyrics() {
+	public void loadLyrics(GenericHandler _handler) {
+		mHandler = _handler;
+		
 		String baseURL = "http://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect?" + 
 					"artist=" + enc(mTrack.getArtist()) + "&" + 
 					"song=" + enc(mTrack.getTitle());
-		String response = getUrl(baseURL);
-		return parse(response);
+		Handler handler = new Handler() {
+			public void handleMessage(Message message) {
+				switch (message.what) {
+				case HttpConnection.DID_START: {
+					Log.i(TAG, "Getting lyrics...");
+					break;
+				}
+				case HttpConnection.DID_SUCCEED: {
+					String response = (String) message.obj;
+					mLyrics = parse(response);
+					mHandler.handleSuccess();
+					break;
+				}
+				case HttpConnection.DID_ERROR: {
+					Exception e = (Exception) message.obj;
+					// TODO: try e.toString() maybe it gives more detail about the error
+					// Otherwise find a way to use printStackTrace()
+					Log.e(TAG, "Error: " + e.getMessage());
+					break;
+				}
+				}
+			}
+		};
+		new HttpConnection(handler).get(baseURL);
+		Log.v(TAG, "Fetching url: " + baseURL);
 	}
 	
 	private String parse(String response) {
@@ -94,9 +124,5 @@ public class ChartLyricsProvider extends LyricsProvider {
 		} else {
 			return null;
 		}
-	}
-	
-	public String toString() {
-		return mSource;
 	}
 }
