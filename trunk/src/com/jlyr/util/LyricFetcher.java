@@ -5,7 +5,7 @@ import android.util.Log;
 import com.jlyr.providers.*;
 
 public class LyricFetcher {
-
+	
 	LyricsProvider[] mProviders = null;
 	int mProviderIndex = 0;
 	
@@ -27,21 +27,16 @@ public class LyricFetcher {
 	
 	private void loadProviders(String source) {
 		if (source == null) {
-			mProviders = new LyricsProvider[] {
-					new DummyProvider(mTrack),
-					new LyrDbProvider(mTrack),
-					new ChartLyricsProvider(mTrack)};
-		} else if (source == "ChartLyrics") {
-			mProviders = new LyricsProvider[] {
-					new ChartLyricsProvider(mTrack)};
-		} else if (source == "LyrDB") {
-			mProviders = new LyricsProvider[] {
-					new LyrDbProvider(mTrack)};
+			// All providers
+			loadProvidersFromList(null);
 		} else {
-			Log.w(TAG, "Got an unkown source <" + source + ">. Using default.");
-			mProviders = new LyricsProvider[] {
-					new LyrDbProvider(mTrack)};
+			loadProvidersFromList(new String[] {source});
 		}
+	}
+	
+	private void loadProvidersFromList(String[] providers) {
+		ProvidersCollection coll = new ProvidersCollection(providers);
+		mProviders = coll.toArray(mTrack);
 	}
 	
 	public void fetchLyrics(GenericHandler _handler) {
@@ -58,6 +53,7 @@ public class LyricFetcher {
 			return;
 		}
 		
+		// TODO: getSource always returns GenericSource, because of the type of provider (LyricsProvider)
 		LyricsProvider provider = mProviders[mProviderIndex];
 		Log.d(TAG, "Trying provider " + provider.getSource());
 		
@@ -69,6 +65,11 @@ public class LyricFetcher {
         		} else {
         			mHandler.handleSuccess();
         		}
+        	}
+        	
+        	public void handleError() {
+        		mHandler.handleError();
+        		useNextProvider();
         	}
         });
 	}

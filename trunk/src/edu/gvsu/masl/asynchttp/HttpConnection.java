@@ -113,8 +113,9 @@ public class HttpConnection implements Runnable {
 		BufferedReader br = new BufferedReader(new InputStreamReader(entity
 				.getContent()));
 		String line, result = "";
+		String eol = System.getProperty("line.separator");
 		while ((line = br.readLine()) != null)
-			result += line;
+			result += line+eol;
 		Message message = Message.obtain(handler, DID_SUCCEED, result);
 		handler.sendMessage(message);
 	}

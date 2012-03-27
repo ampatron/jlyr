@@ -8,4 +8,8 @@ public class GenericHandler {
 	public void handleSuccess() {
 		
 	}
+
+	public void handleError() {
+		
+	}
 }

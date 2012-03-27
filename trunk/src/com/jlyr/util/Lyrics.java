@@ -36,8 +36,14 @@ public class Lyrics {
 	    	        	mReader.save(lyrics);
 	    	        	String[] content = mReader.getContent();
 	    	    		mLyrics = content[1];
-	    	        	mLyrHandler.handleSuccess();
+	    	        } else {
+	    	        	mLyrics = null;
 	    	        }
+	        		mLyrHandler.handleSuccess();
+	        	}
+	        	
+	        	public void handleError() {
+	        		mLyrHandler.handleError();
 	        	}
 	        });
 		} else {

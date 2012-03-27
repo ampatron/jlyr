@@ -1,26 +1,20 @@
 package com.jlyr.providers;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.util.Log;
 
 import com.jlyr.util.GenericHandler;
 import com.jlyr.util.Track;
 
-public class LyricsProvider {
+public abstract class LyricsProvider {
 	
-	String mSource = "GenericSource";
-	Track mTrack = null;
-	String mLyrics = null;
-	GenericHandler mHandler = null;
+	protected Track mTrack = null;
+	protected String mLyrics = null;
+	protected GenericHandler mHandler = null;
 	
 	public static final String TAG = "JLyrProvider";
 	
@@ -28,47 +22,13 @@ public class LyricsProvider {
 		mTrack = track;
 	}
 	
-	public String getSource() {
-		return mSource;
-	}
+	public abstract String getSource();
 	
 	public String getLyrics() {
 		return mLyrics;
 	}
 	
-	public void loadLyrics(GenericHandler _handler) {
-		mHandler = _handler;
-		mHandler.handleSuccess();
-	}
-
-	protected String getUrl(String uri) {
-		String response = null;
-		
-		Log.d(TAG, "Get URI (provider: " + this.toString() + "): " + uri);
-		Log.d(TAG, "for: " + mTrack.getTitle() + " - " + mTrack.getArtist());
-		
-		if (uri == null) {
-			return null;
-		}
-		
-		DefaultHttpClient http = new DefaultHttpClient();
-		HttpGet request = new HttpGet(uri);
-		
-		try {
-			ResponseHandler<String> handler = new BasicResponseHandler();
-			response = http.execute(request, handler);
-		} catch (ClientProtocolException e) {
-			Log.e(TAG, "Error - ClientProtocolException: " + e.getMessage());
-		} catch (IOException e) {
-			// TODO: try e.toString() maybe it gives more detail about the error
-			// Otherwise find a way to use printStackTrace()
-			Log.e(TAG, "Error - IOException: " + e.getMessage());
-		} finally {
-			http.getConnectionManager().shutdown();
-		}
-        
-		return response;
-	}
+	public abstract void loadLyrics(GenericHandler _handler);
 	
 	protected static String enc(String s) {
 		try {

@@ -26,12 +26,14 @@ import android.util.Log;
 
 public class ChartLyricsProvider extends LyricsProvider {
 	
-	String mSource = "ChartLyrics";
-	
 	public static final String TAG = "JLyrChartLyricsProvider";
 	
 	public ChartLyricsProvider(Track track) {
 		super(track);
+	}
+	
+	public String getSource() {
+		return "ChartLyrics";
 	}
 	
 	@Override
@@ -59,6 +61,9 @@ public class ChartLyricsProvider extends LyricsProvider {
 					// TODO: try e.toString() maybe it gives more detail about the error
 					// Otherwise find a way to use printStackTrace()
 					Log.e(TAG, "Error: " + e.getMessage());
+					
+					mLyrics = null;
+					mHandler.handleError();
 					break;
 				}
 				}

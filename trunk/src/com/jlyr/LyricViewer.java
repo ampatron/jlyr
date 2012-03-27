@@ -1,9 +1,11 @@
 package com.jlyr;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 
@@ -53,6 +55,15 @@ public class LyricViewer extends Activity {
                 String lyricsStr = mLyrics.getLyrics();
                 
                 mText.setText(trackInfoStr + "\n" + ((lyricsStr == null)? getText(R.string.lyrics_not_found) : lyricsStr));
+        	}
+        	
+        	public void handleError() {
+        		Context context = getApplicationContext();
+                CharSequence text = "An error occured!";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
         	}
         });
     }

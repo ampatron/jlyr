@@ -11,12 +11,14 @@ import android.util.Log;
 
 public class LyrDbProvider extends LyricsProvider {
 	
-	String mSource = "LyrDB";
-	
 	public static final String TAG = "JLyrLyrDBProvider";
 	
 	public LyrDbProvider(Track track) {
 		super(track);
+	}
+	
+	public String getSource() {
+		return "LyrDB";
 	}
 	
 	@Override
@@ -38,8 +40,10 @@ public class LyrDbProvider extends LyricsProvider {
 					String response = (String) message.obj;
 					int end = response.indexOf("\\");
 					if (end == -1) {
+						Log.i(TAG, "LyrDB id not found in: " + response);
 						mLyrics = null;
 						mHandler.handleSuccess();
+						return;
 					}
 					
 					String lyricsid = response.substring(0, end);
@@ -52,6 +56,9 @@ public class LyrDbProvider extends LyricsProvider {
 					// TODO: try e.toString() maybe it gives more detail about the error
 					// Otherwise find a way to use printStackTrace()
 					Log.e(TAG, "Error: " + e.getMessage());
+					
+					mLyrics = null;
+					mHandler.handleError();
 					break;
 				}
 				}

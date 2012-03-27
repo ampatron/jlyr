@@ -6,7 +6,18 @@
     <string name="settings">Settings</string>
     <string name="settings_notification">Notifications</string>
     <string name="notification_title">View Lyrics</string>
-    <string name="lyrics_not_found">Could not get lyrics from the internet.</string>
+    <string name="lyrics_not_found">Could not get lyrics from the Internet.</string>
     <string name="no_track_specified">No track is playing or no track was passed.</string>
+    <string name="search_title">Title</string>
+    <string name="search_artist">Artist</string>
+    <string name="search_button">Search</string>
+    <string-array name="main_list">
+        <item >Now Playing</item>
+        <item >Search Lyrics</item>
+        
+        <item >Browse Lyrics</item><item>Settings</item>
+        <item >About</item>
+    </string-array>
+        <string name="about">View all your favorite lyrics in a clean and simple way, free of ads. If you have any comments, bugs or suggestions: jadkik94@gmail.com</string>
 
 </resources>

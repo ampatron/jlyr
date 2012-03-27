@@ -1,10 +1,15 @@
 package com.jlyr;
 
 
+import java.io.File;
+
+import com.jlyr.util.LyricReader;
 import com.jlyr.util.Track;
 import com.jlyr.util.TrackBrowser;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,32 +20,43 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.util.Log;
 
 /*
- * TODO: change the main screen. it shouldn't be the browser. and change the launcher name
  * TODO: sort the tracks in lyric browser. i think they are sorted by "last modified" or "created" date.
- * TODO: load the lyrics asynchronously (done, just see if its better to use android.os.Handler
+ * TODO: load the lyrics asynchronously (done, just see if its better to use android.os.Handler)
  * TODO: add a menu in the LyricViewer so that lyrics can be deleted, reloaded or fetched from a specific provider
  * TODO: add a menu item in browser to wipe all downloaded lyrics
  * TODO: add a preference to save or not the lyrics
  * TODO: ScrobbleDroidReceiver handle SAME_AS_CURRENT tracks better. What if it's a null SAME_AS_CURRENT?
  * TODO: add a preference to choose lyrics providers (even a single one)
- * TODO: LyrDbProvider fix the error that occurs when lyrics are not found (i think its fixed now)
  * TODO: add more providers
  * TODO: add more receivers
  * TODO: allow to choose receivers (like in Simple Last.fm Scrobbler)
  * TODO: add preference to fetch lyrics on wifi only, etc.
  * TODO: add preference to allow automatically downloading lyrics (without pressing on the notification or Now Playing)
+ * TODO: add option to choose to load from specific provider on long press from browser
+ * TODO: add option to choose to load from specific provider in search page
+ * TODO: customize display: bgcolor, font size/color
+ * TODO: main screen should display the name of now playing song
+ * TODO: maybe use database to save names of stored lyrics, to use search and/or load better in browser
+ * TODO: disable reload menu item when re/loadingTrackBrowser cause it is in a Thread and there might be duplicate entries
+ * TODO: make a LocalProvider instead of LyricReader? how would you save them then?
+ * TODO: save in local file track info and provider/source. it should be displayed in the viewer
+ * TODO: when loading lyrics show toast or similar saying what source we are trying, this will require android.os.Handler's instead of GenericHandler
+ * TODO: add edit functionality to the saved lyrics.
  */
 
 public class LyricBrowser extends ListActivity {
 	
 	private Menu mMenu;
 	private ArrayAdapter<TrackBrowser.TrackView> la = null;
+	
+	private static final String[] dialogItems = new String[] {"View", "Delete", "Reload"};
 	
 	public static final String TAG = "JLyrBrowser"; 
 	
@@ -53,7 +69,7 @@ public class LyricBrowser extends ListActivity {
     }
     
     private void populateList() {
-        ListView lv = getListView();
+        final ListView lv = getListView();
         lv.setTextFilterEnabled(true);
 
         la = new ArrayAdapter<TrackBrowser.TrackView>(this, R.layout.list_item);
@@ -96,17 +112,21 @@ public class LyricBrowser extends ListActivity {
         	TrackBrowser.TrackView tv = (TrackBrowser.TrackView) parent.getAdapter().getItem(position);
         	Track track = tv.getTrack();
         	if (track != null) {
-        		Intent intent = new Intent(LyricBrowser.this, LyricViewer.class);
-        		//intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        		intent.putExtra("Track.title", track.getTitle());
-        		intent.putExtra("Track.artist", track.getArtist());
-        		intent.putExtra("Track.album", track.getAlbum());
-        		intent.putExtra("Track.year", track.getYear());
-        		
-        		startActivity(intent);
-        		//finish();
+        		doView(track);
         	}
           }
+        });
+        
+        lv.setOnItemLongClickListener(new OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+              	TrackBrowser.TrackView tv = (TrackBrowser.TrackView) parent.getAdapter().getItem(position);
+              	Track track = tv.getTrack();
+              	if (track != null) {
+              		showChoiceDialog(tv);
+              	}
+              	return true;
+            }
         });
     }
     
@@ -157,6 +177,51 @@ public class LyricBrowser extends ListActivity {
         
         return false;
     }
+
+    public void showChoiceDialog(TrackBrowser.TrackView tv) {
+    	final Track track = tv.getTrack();
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this); 
+    	builder.setTitle(tv.toString())
+    		   .setItems(dialogItems, new DialogInterface.OnClickListener() {
+    			   public void onClick(DialogInterface dialog, int item) {
+    				   switch (item) {
+    				   case 0:
+    					   doView(track);
+    					   break;
+    				   case 1:
+    					   doDelete(track);
+    					   populateList();
+    					   break;
+    				   case 2:
+    					   doDelete(track);
+    					   doView(track);
+    					   break;
+    				   default:
+    					   Log.w(TAG, "Unknown item selected: " + item);
+    					   break;
+    				   }
+    			   }
+    		   });
+    	AlertDialog dialog = builder.create();
+    	dialog.show();
+    }
     
+    public void doView(Track track) {
+    	Intent intent = new Intent(LyricBrowser.this, LyricViewer.class);
+		//intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.putExtra("Track.title", track.getTitle());
+		intent.putExtra("Track.artist", track.getArtist());
+		intent.putExtra("Track.album", track.getAlbum());
+		intent.putExtra("Track.year", track.getYear());
+		
+		startActivity(intent);
+		//finish();
+    }
+    
+    public void doDelete(Track track) {
+    	LyricReader reader = new LyricReader(track);
+  		File file = reader.getFile();
+  		file.delete();
+    }
     
 }
