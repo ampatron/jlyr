@@ -1,11 +1,6 @@
 package com.jlyr.util;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import com.jlyr.R;
 
 import android.os.Handler;
 import android.os.Message;
@@ -51,7 +46,7 @@ public class TrackBrowser implements Runnable {
 	}
 
 	public void run() {
-		handler.sendMessage(Message.obtain(handler, DID_START));
+		handler.sendMessage(Message.obtain(handler, TrackBrowser.DID_START));
 		try {
 			File dir = LyricReader.getLyricsDirectory();
 	        if (!dir.exists()) {
@@ -64,11 +59,11 @@ public class TrackBrowser implements Runnable {
 	        	Track track = reader.getTrack();
 	        	Log.i(TAG, "Add: " + track);
 	        	TrackView tv = new TrackView(track);
-	        	handler.sendMessage(Message.obtain(handler, ADD, tv));
+	        	handler.sendMessage(Message.obtain(handler, TrackBrowser.ADD, tv));
 	        }
-	        handler.sendMessage(Message.obtain(handler, DID_SUCCEED));
+	        handler.sendMessage(Message.obtain(handler, TrackBrowser.DID_SUCCEED));
 		} catch (Exception e) {
-			handler.sendMessage(Message.obtain(handler, DID_ERROR, e));
+			handler.sendMessage(Message.obtain(handler, TrackBrowser.DID_ERROR, e));
 		}
 	}
  }

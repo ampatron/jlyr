@@ -2,19 +2,19 @@ package com.jlyr.providers;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
-import com.jlyr.util.GenericHandler;
+import com.jlyr.util.Lyrics;
 import com.jlyr.util.Track;
 
 public abstract class LyricsProvider {
 	
 	protected Track mTrack = null;
 	protected String mLyrics = null;
-	protected GenericHandler mHandler = null;
+	protected Handler mHandler = null;
 	
 	public static final String TAG = "JLyrProvider";
 	
@@ -28,7 +28,22 @@ public abstract class LyricsProvider {
 		return mLyrics;
 	}
 	
-	public abstract void loadLyrics(GenericHandler _handler);
+	protected void doError() {
+		Message msg = Message.obtain(mHandler, Lyrics.DID_ERROR);
+		mHandler.sendMessage(msg);
+	}
+	
+	protected void doFail() {
+		Message msg = Message.obtain(mHandler, Lyrics.DID_FAIL);
+		mHandler.sendMessage(msg);
+	}
+	
+	protected void doLoad() {
+		Message msg = Message.obtain(mHandler, Lyrics.DID_LOAD);
+		mHandler.sendMessage(msg);
+	}
+	
+	public abstract void loadLyrics(Handler _handler);
 	
 	protected static String enc(String s) {
 		try {

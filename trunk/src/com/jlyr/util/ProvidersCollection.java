@@ -4,11 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import android.util.Log;
 
@@ -86,5 +83,9 @@ public class ProvidersCollection {
 			}
 		}
 		return providers.toArray(new LyricsProvider[0]);
+	}
+	
+	public List<String> getSources() {
+		return mSources;
 	}
 }

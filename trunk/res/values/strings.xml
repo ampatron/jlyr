@@ -19,5 +19,10 @@
         <item >About</item>
     </string-array>
         <string name="about">View all your favorite lyrics in a clean and simple way, free of ads. If you have any comments, bugs or suggestions: jadkik94@gmail.com</string>
+        <string name="wipe_lyrics">Wipe</string>
+        <string name="search_source">Source</string>
+        <string name="settings_viewer_font_size">Font Size</string>
+        <string name="settings_viewer_font_color">Font Color</string>
+        <string name="settings_viewer_bg_color">Background Color</string>
 
 </resources>

@@ -1,8 +1,10 @@
 package com.jlyr.providers;
 
-import com.jlyr.util.GenericHandler;
+import com.jlyr.util.Lyrics;
 import com.jlyr.util.Track;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 public class DummyProvider extends LyricsProvider {
@@ -18,10 +20,13 @@ public class DummyProvider extends LyricsProvider {
 	}
 	
 	@Override
-	public void loadLyrics(GenericHandler _handler) {
+	public void loadLyrics(Handler _handler) {
 		mHandler = _handler;
 		
+		Log.i(TAG, "Dummy will fail now!");
+		
 		mLyrics = null;
-		mHandler.handleSuccess();
+		Message message = Message.obtain(mHandler, Lyrics.DID_FAIL);
+		mHandler.sendMessage(message);
 	}
 }

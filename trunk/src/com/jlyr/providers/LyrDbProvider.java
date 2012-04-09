@@ -1,6 +1,5 @@
 package com.jlyr.providers;
 
-import com.jlyr.util.GenericHandler;
 import com.jlyr.util.Track;
 
 import edu.gvsu.masl.asynchttp.HttpConnection;
@@ -22,7 +21,7 @@ public class LyrDbProvider extends LyricsProvider {
 	}
 	
 	@Override
-	public void loadLyrics(GenericHandler _handler) {
+	public void loadLyrics(Handler _handler) {
 		mHandler = _handler;
 		
 		String firstUrl = "http://webservices.lyrdb.com/lookup.php?q=" + 
@@ -42,7 +41,8 @@ public class LyrDbProvider extends LyricsProvider {
 					if (end == -1) {
 						Log.i(TAG, "LyrDB id not found in: " + response);
 						mLyrics = null;
-						mHandler.handleSuccess();
+						
+						doFail();
 						return;
 					}
 					
@@ -58,7 +58,8 @@ public class LyrDbProvider extends LyricsProvider {
 					Log.e(TAG, "Error: " + e.getMessage());
 					
 					mLyrics = null;
-					mHandler.handleError();
+					
+					doError();
 					break;
 				}
 				}
@@ -81,7 +82,8 @@ public class LyrDbProvider extends LyricsProvider {
 				case HttpConnection.DID_SUCCEED: {
 					String response = (String) message.obj;
 					mLyrics = response;
-					mHandler.handleSuccess();
+					
+					doLoad();
 					break;
 				}
 				case HttpConnection.DID_ERROR: {
@@ -89,6 +91,8 @@ public class LyrDbProvider extends LyricsProvider {
 					// TODO: try e.toString() maybe it gives more detail about the error
 					// Otherwise find a way to use printStackTrace()
 					Log.e(TAG, "Error: " + e.getMessage());
+					
+					doError();
 					break;
 				}
 				}

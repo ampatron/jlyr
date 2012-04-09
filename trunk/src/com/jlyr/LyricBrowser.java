@@ -2,10 +2,12 @@ package com.jlyr;
 
 
 import java.io.File;
+import java.util.Comparator;
 
 import com.jlyr.util.LyricReader;
 import com.jlyr.util.Track;
 import com.jlyr.util.TrackBrowser;
+import com.jlyr.util.TrackBrowser.TrackView;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -23,14 +25,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.util.Log;
 
 /*
- * TODO: sort the tracks in lyric browser. i think they are sorted by "last modified" or "created" date.
- * TODO: load the lyrics asynchronously (done, just see if its better to use android.os.Handler)
- * TODO: add a menu in the LyricViewer so that lyrics can be deleted, reloaded or fetched from a specific provider
- * TODO: add a menu item in browser to wipe all downloaded lyrics
  * TODO: add a preference to save or not the lyrics
  * TODO: ScrobbleDroidReceiver handle SAME_AS_CURRENT tracks better. What if it's a null SAME_AS_CURRENT?
  * TODO: add a preference to choose lyrics providers (even a single one)
@@ -40,21 +37,30 @@ import android.util.Log;
  * TODO: add preference to fetch lyrics on wifi only, etc.
  * TODO: add preference to allow automatically downloading lyrics (without pressing on the notification or Now Playing)
  * TODO: add option to choose to load from specific provider on long press from browser
- * TODO: add option to choose to load from specific provider in search page
- * TODO: customize display: bgcolor, font size/color
  * TODO: main screen should display the name of now playing song
  * TODO: maybe use database to save names of stored lyrics, to use search and/or load better in browser
- * TODO: disable reload menu item when re/loadingTrackBrowser cause it is in a Thread and there might be duplicate entries
- * TODO: make a LocalProvider instead of LyricReader? how would you save them then?
  * TODO: save in local file track info and provider/source. it should be displayed in the viewer
- * TODO: when loading lyrics show toast or similar saying what source we are trying, this will require android.os.Handler's instead of GenericHandler
  * TODO: add edit functionality to the saved lyrics.
+ * TODO: add canRead() and canSave() methods to providers, and provide the user with a choice to save there and there and read there and there. LyricReader will be a provider.
+ * TODO: in browser use @string/... for long click choice dialog, same for delete,source in viewer menu
+ * TODO: use @color instead of @integer for colors?
  */
 
 public class LyricBrowser extends ListActivity {
 	
 	private Menu mMenu;
 	private ArrayAdapter<TrackBrowser.TrackView> la = null;
+	
+	private static final Comparator<TrackBrowser.TrackView> mComparator = new Comparator<TrackBrowser.TrackView>() {
+
+		@Override
+		public int compare(TrackView arg0, TrackView arg1) {
+			String str0 = arg0.toString();
+			String str1 = arg1.toString();
+			return str0.compareTo(str1);
+		}
+		
+	};
 	
 	private static final String[] dialogItems = new String[] {"View", "Delete", "Reload"};
 	
@@ -69,6 +75,11 @@ public class LyricBrowser extends ListActivity {
     }
     
     private void populateList() {
+    	if (mMenu != null) {
+	    	MenuItem mi = mMenu.getItem(0);
+	    	mi.setEnabled(false);
+    	}
+    	
         final ListView lv = getListView();
         lv.setTextFilterEnabled(true);
 
@@ -84,6 +95,11 @@ public class LyricBrowser extends ListActivity {
 				}
 				case TrackBrowser.DID_SUCCEED: {
 					Log.i(TAG, "Done.");
+					if (mMenu != null) {
+				    	MenuItem mi = mMenu.getItem(0);
+				    	mi.setEnabled(true);
+			    	}
+					la.sort(mComparator);
 					break;
 				}
 				case TrackBrowser.ADD: {
@@ -158,21 +174,17 @@ public class LyricBrowser extends ListActivity {
                 populateList();
                 return true;
             
-            case R.id.settings_menu_item:
-                Toast.makeText(this, "Settings!", Toast.LENGTH_SHORT).show();
-                Intent settingsIntent = new Intent(LyricBrowser.this, JLyrSettings.class);
-        		startActivity(settingsIntent);
-        		//finish();
-                return true;
+            case R.id.wipe_menu_item:
+          		File dir = LyricReader.getLyricsDirectory();
+          		for (File f : dir.listFiles()) {
+          			f.delete();
+          		}
+          		populateList();
+            	return true;
                 
-            // Generic catch all for all the other menu resources
             default:
-                // Don't toast text when a submenu is clicked
-                if (!item.hasSubMenu()) {
-                    Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                break;
+        		Log.e(TAG, "Got an undefined list item " + item.getTitle());
+        		break;
         }
         
         return false;

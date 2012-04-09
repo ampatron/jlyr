@@ -15,7 +15,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.jlyr.util.GenericHandler;
 import com.jlyr.util.Track;
 
 import edu.gvsu.masl.asynchttp.HttpConnection;
@@ -37,7 +36,7 @@ public class ChartLyricsProvider extends LyricsProvider {
 	}
 	
 	@Override
-	public void loadLyrics(GenericHandler _handler) {
+	public void loadLyrics(Handler _handler) {
 		mHandler = _handler;
 		
 		String baseURL = "http://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect?" + 
@@ -53,7 +52,6 @@ public class ChartLyricsProvider extends LyricsProvider {
 				case HttpConnection.DID_SUCCEED: {
 					String response = (String) message.obj;
 					mLyrics = parse(response);
-					mHandler.handleSuccess();
 					break;
 				}
 				case HttpConnection.DID_ERROR: {
@@ -63,7 +61,8 @@ public class ChartLyricsProvider extends LyricsProvider {
 					Log.e(TAG, "Error: " + e.getMessage());
 					
 					mLyrics = null;
-					mHandler.handleError();
+					
+					doError();
 					break;
 				}
 				}
@@ -78,29 +77,43 @@ public class ChartLyricsProvider extends LyricsProvider {
 
 		Document dom = null;
 		
+		InputStream is = null;
 		try {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			
-			InputStream is = null;
 			try {
 	            is = new ByteArrayInputStream(response.getBytes("UTF-8"));
 	        } catch (UnsupportedEncodingException e) {
 	        	Log.e(TAG, "String lacks support for UTF-8!?");
+	        	doError();
 	        	return null;
 	        }
 			dom = db.parse(is);
 		}catch(ParserConfigurationException pce) {
 			Log.e(TAG, "Error parsing XML: ParserConfigurationException");
+			
+			doError();
 			return null;
 		}catch(SAXException se) {
 			Log.e(TAG, "Error parsing XML: SAXException");
+			
+			doError();
 			return null;
 		}catch(IOException ioe) {
 			Log.e(TAG, "Error parsing XML: IOException");
+			
+			doError();
 			return null;
 		}
 		
 		Element docEle = dom.getDocumentElement();
+		if (docEle == null) {
+			Log.e(TAG, "Document Element is null");
+			Log.e(TAG, is.toString());
+			
+			doFail();
+			return null;
+		}
 
 		String artist = getFirstElementValue(docEle, "LyricArtist");
 		String title = getFirstElementValue(docEle, "LyricSong");
@@ -108,8 +121,13 @@ public class ChartLyricsProvider extends LyricsProvider {
 
 		if (lyrics == null) {
 			Log.e(TAG, "No <Lyric> XML tag found");
+			Log.e(TAG, is.toString());
+			
+			doFail();
 			return null;
 		} else {
+			doLoad();
+			
 			String eol = System.getProperty("line.separator");
 			return "[ " + (artist==null? "NULL" : artist) + " - " + (title==null? "NULL" : title) + " ]" + eol + lyrics;
 		}
