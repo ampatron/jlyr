@@ -129,7 +129,7 @@ public class ChartLyricsProvider extends LyricsProvider {
 			doLoad();
 			
 			String eol = System.getProperty("line.separator");
-			return "[ " + (artist==null? "NULL" : artist) + " - " + (title==null? "NULL" : title) + " ]" + eol + lyrics;
+			return "[ ChartLyrics - " + (artist==null? "NULL" : artist) + " - " + (title==null? "NULL" : title) + " ]" + eol + lyrics;
 		}
 	}
 

@@ -53,7 +53,15 @@ public class LyricSearch extends Activity {
             	List<String> sourcesList = mSources.getSelectedItems();
             	String[] sources = sourcesList.toArray(new String[] {});
             	
-            	Log.i(TAG, "Searching for: " + title + " - " + artist + " in: " + sources.toString());
+            	String sources_string = "";
+            	for (String src : sources) {
+            		sources_string += src + ", ";
+            	}
+            	if (sources_string.length() > 2) {
+            		sources_string = sources_string.substring(0, sources_string.length() - 2);
+            	}
+            	
+            	Log.i(TAG, "Searching for: " + title + " - " + artist + " in: " + sources_string);
             	
             	Intent intent = new Intent(LyricSearch.this, LyricViewer.class);
             	intent.putExtra("Track.title", title);

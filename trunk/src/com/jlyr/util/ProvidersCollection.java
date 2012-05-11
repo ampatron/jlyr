@@ -9,17 +9,21 @@ import java.util.List;
 
 import android.util.Log;
 
+import com.jlyr.providers.AZLyricsProvider;
 import com.jlyr.providers.ChartLyricsProvider;
 import com.jlyr.providers.DummyProvider;
 import com.jlyr.providers.LyrDbProvider;
 import com.jlyr.providers.LyricsProvider;
+import com.jlyr.providers.MetroLyricsProvider;
 
 public class ProvidersCollection {
 	private static final LinkedHashMap<String, Class<?>> map = new LinkedHashMap<String, Class<?>>() {
 		private static final long serialVersionUID = 1L;
 
 		{
-			put("Dummy", DummyProvider.class);
+			//put("Dummy", DummyProvider.class);
+			put("AZLyrics", AZLyricsProvider.class);
+			put("MetroLyrics", MetroLyricsProvider.class);
 			put("LyrDB", LyrDbProvider.class);
 			put("ChartLyrics", ChartLyricsProvider.class);
 		}
