@@ -21,11 +21,11 @@ public class ProvidersCollection {
 		private static final long serialVersionUID = 1L;
 
 		{
-			//put("Dummy", DummyProvider.class);
 			put("AZLyrics", AZLyricsProvider.class);
 			put("MetroLyrics", MetroLyricsProvider.class);
 			put("LyrDB", LyrDbProvider.class);
 			put("ChartLyrics", ChartLyricsProvider.class);
+			put("Dummy", DummyProvider.class);
 		}
 	};
 	
