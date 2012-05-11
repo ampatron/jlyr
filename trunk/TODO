@@ -1,0 +1,19 @@
+- add a preference to save or not the lyrics
+- ScrobbleDroidReceiver handle SAME_AS_CURRENT tracks better. What if it's a null SAME_AS_CURRENT?
+- add a preference to choose default lyrics providers (even a single one)
+- add more providers
+- add more receivers
+- allow to choose receivers (like in Simple Last.fm Scrobbler)
+- add preference to fetch lyrics on wifi only, etc.
+- add preference to allow automatically downloading lyrics (without pressing on the notification or Now Playing)
+- add option to choose to load from specific provider on long press from browser
+- main screen should display the name of now playing song
+- maybe use database to save names of stored lyrics, to use search and/or load better in browser
+- save in local file track info and provider/source. it should be displayed in the viewer
+- add edit functionality to the saved lyrics.
+- add canRead() and canSave() methods to providers, and provide the user with a choice to save there and there and read there and there. LyricReader will be a provider.
+- in browser use @string/... for long click choice dialog, same for delete,source in viewer menu
+- use @color instead of @integer for colors?
+- in LyricViewer, when changing orientation, preserve scroll position
+- add a "search in DuckDuckGo" or Google option, will open in browser (or maybe WebView, or use a search API)
+- sort tracks as they are added in the browser.

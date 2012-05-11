@@ -27,25 +27,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.util.Log;
 
-/*
- * TODO: add a preference to save or not the lyrics
- * TODO: ScrobbleDroidReceiver handle SAME_AS_CURRENT tracks better. What if it's a null SAME_AS_CURRENT?
- * TODO: add a preference to choose lyrics providers (even a single one)
- * TODO: add more providers
- * TODO: add more receivers
- * TODO: allow to choose receivers (like in Simple Last.fm Scrobbler)
- * TODO: add preference to fetch lyrics on wifi only, etc.
- * TODO: add preference to allow automatically downloading lyrics (without pressing on the notification or Now Playing)
- * TODO: add option to choose to load from specific provider on long press from browser
- * TODO: main screen should display the name of now playing song
- * TODO: maybe use database to save names of stored lyrics, to use search and/or load better in browser
- * TODO: save in local file track info and provider/source. it should be displayed in the viewer
- * TODO: add edit functionality to the saved lyrics.
- * TODO: add canRead() and canSave() methods to providers, and provide the user with a choice to save there and there and read there and there. LyricReader will be a provider.
- * TODO: in browser use @string/... for long click choice dialog, same for delete,source in viewer menu
- * TODO: use @color instead of @integer for colors?
- */
-
 public class LyricBrowser extends ListActivity {
 	
 	private Menu mMenu;
