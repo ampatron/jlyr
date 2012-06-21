@@ -1,28 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">JLyr Lyrics</string>
-    <string name="reload">Reload</string>
-    <string name="now_playing">Now Playing</string>
-    <string name="settings">Settings</string>
-    <string name="settings_notification">Notifications</string>
+
+    <!-- Main Menu Items -->
+    <string-array name="main_list">
+        <item>Now Playing</item>
+        <item>Search Lyrics</item>
+        <item>Browse Lyrics</item>
+        <item>Settings</item>
+        <item>About</item>
+    </string-array>
+    
+    <!-- Notifications -->
     <string name="notification_title">View Lyrics</string>
+    
+    <!-- Meta -->
+    <string name="app_name">JLyr Lyrics</string>
+    
+    <!-- Lyrics Viewer -->
     <string name="lyrics_not_found">Could not get lyrics from the Internet.</string>
     <string name="no_track_specified">No track is playing or no track was passed.</string>
+    
+    <!-- Lyrics Viewer Menu -->
+    <string name="reload">Reload</string>
+    <string name="delete">Delete</string>
+    <string name="source">Source</string>
+    <string name="save">Save</string>
+    
+    <!-- Lyrics Browser Menu -->
+    <string name="wipe_lyrics">Wipe</string>
+    <string name="now_playing">Now Playing</string>
+    
+    <!-- Lyrics Browser Long Press Menu -->
+    <string name="view">View</string>
+    
+    <!-- Lyrics Searcher Form -->
     <string name="search_title">Title</string>
     <string name="search_artist">Artist</string>
+    <string name="search_source">Source</string>
     <string name="search_button">Search</string>
-    <string-array name="main_list">
-        <item >Now Playing</item>
-        <item >Search Lyrics</item>
-        
-        <item >Browse Lyrics</item><item>Settings</item>
-        <item >About</item>
-    </string-array>
-        <string name="about">View all your favorite lyrics in a clean and simple way, free of ads. If you have any comments, bugs or suggestions: jadkik94@gmail.com</string>
-        <string name="wipe_lyrics">Wipe</string>
-        <string name="search_source">Source</string>
-        <string name="settings_viewer_font_size">Font Size</string>
-        <string name="settings_viewer_font_color">Font Color</string>
-        <string name="settings_viewer_bg_color">Background Color</string>
+    
+    <!-- Settings Categories -->
+    <string name="settings_display_category">Lyrics Viewer Display</string>
+    <string name="settings_behavior_category">Lyrics Fetching Behavior</string>
+    <string name="settings_providers_category">Providers</string>
+    
+    <!-- Notifications -->
+    <string name="settings_notification">Notifications</string>
+    
+    <!-- Viewer Font -->
+    <string name="settings_viewer_font_size">Font Size</string>
+    <string name="settings_viewer_font_color">Font Color</string>
+    
+    <!-- Viewer Background -->
+    <string name="settings_viewer_bg_color">Background Color</string>
+    
+    <!-- Fetcher Behavior -->
+    <string name="settings_auto_save_lyrics">Auto save lyrics</string>
+    <string name="settings_do_auto_save_lyrics">Will automatically save lyrics when fetched</string>
+    <string name="settings_dont_auto_save_lyrics">Will NOT automatically save lyrics when fetched</string>
+    
+    <string name="settings_auto_fetch_lyrics">Auto fetch lyrics</string>
+    <string name="settings_do_auto_fetch_lyrics">Will fetch lyrics as soon as a now playing song is played</string>
+    <string name="settings_dont_auto_fetch_lyrics">Will NOT fetch lyrics as soon as a now playing song is played</string>
+    
+    <!-- Providers -->
+    <string name="settings_providers">Choose Default Providers</string>
+    <string name="settings_providers_summary">Re-order providers. Slide right to remove.</string>
+    
+    <string name="settings_providers_reset">Reset Providers</string>
+    <string name="settings_providers_reset_summary">Reset all providers preference to default</string>
 
+    <!-- About Dialog -->
+    <string name="about">View all your favorite lyrics in a clean and simple way, free of ads. If you have any comments, bugs or suggestions: jadkik94@gmail.com</string>
+    
 </resources>

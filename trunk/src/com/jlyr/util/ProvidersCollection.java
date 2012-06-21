@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.jlyr.providers.AZLyricsProvider;
@@ -30,14 +33,24 @@ public class ProvidersCollection {
 	};
 	
 	private List<String> mSources = null;
+	private Context mContext;
 	
 	public static final String TAG = "JLyrProvidersCollection";
+	
+	public ProvidersCollection(Context context, String[] sources) {
+		mContext = context;
+		if (sources != null) {
+			mSources = Arrays.asList(sources);
+		} else {
+			mSources = getSourcesFromPreference();
+		}
+	}
 	
 	public ProvidersCollection(String[] sources) {
 		if (sources != null) {
 			mSources = Arrays.asList(sources);
 		} else {
-			mSources = Arrays.asList(map.keySet().toArray(new String[0]));
+			mSources = ProvidersCollection.getAll();
 		}
 	}
 	
@@ -70,11 +83,39 @@ public class ProvidersCollection {
 		return provider;
 	}
 	
+	public boolean isEnabled(String source) {
+		//TODO: implement the configuration and stuff 
+		return true;
+	}
+	
+	public List<String> getSourcesFromPreference() {
+		if (mContext == null) {
+			return ProvidersCollection.getAll();
+		}
+    	SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mContext);
+    	
+    	String pref = SP.getString("providers", "");
+    	Log.i(TAG, "Preference providers: " + pref);
+    	if (!pref.equals("")) {
+    		return Arrays.asList(pref.split(","));
+    	} else {
+    		return ProvidersCollection.getAll();
+    	}
+    }
+	
 	public LyricsProvider[] toArray(Track track) {
+		return toArray(track, true);
+	}
+	
+	public LyricsProvider[] toArray(Track track, boolean onlyEnabled) {
 		ArrayList<LyricsProvider> providers = new ArrayList<LyricsProvider>();
 		for (String source : mSources) {
 			if (!map.containsKey(source)) {
 				Log.w(TAG, "Skipping unknown provider: " + source);
+				continue;
+			}
+			if (onlyEnabled && !isEnabled(source)) {
+				Log.i(TAG, "Skip disabled provider: " + source);
 				continue;
 			}
 			Class<?> cl = map.get(source);
@@ -91,5 +132,9 @@ public class ProvidersCollection {
 	
 	public List<String> getSources() {
 		return mSources;
+	}
+	
+	static public List<String> getAll() {
+		return Arrays.asList(map.keySet().toArray(new String[0])); 
 	}
 }

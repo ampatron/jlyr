@@ -2,8 +2,11 @@ package com.jlyr.util;
 
 import com.jlyr.providers.LyricsProvider;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class Lyrics {
@@ -12,6 +15,9 @@ public class Lyrics {
 	String mLyrics = null;
 	String[] mSources = null;
 	Handler mLyrHandler = null;
+	boolean mAutoSave = false;
+	
+	Context mContext;
 	
 	LyricsProvider[] mProviders = null;
 	int mProviderIndex = 0;
@@ -24,41 +30,43 @@ public class Lyrics {
 	public static final int DID_FAIL = 3;
 	public static final int IS_TRYING = 4;
 	
-	public Lyrics(Track track) {
-		mTrack = track;
-		mSources = null;
-		init();
+	public Lyrics(Context context, Track track) {
+		init(context, track, null, false);
 	}
 	
-	public Lyrics(Track track, String source) {
-		mTrack = track;
-		mSources = new String[] { source };
-		init();
+	public Lyrics(Context context, Track track, boolean autoSave) {
+		init(context, track, null, null);
 	}
 	
-	public Lyrics(Track track, String[] sources) {
+	public Lyrics(Context context, Track track, String source) {
+		init(context, track, new String[] { source }, null);
+	}
+	
+	public Lyrics(Context context, Track track, String source, Boolean autoSave) {
+		init(context, track, new String[] { source }, autoSave);
+	}
+	
+	public Lyrics(Context context, Track track, String[] sources) {
+		init(context, track, sources, null);
+	}
+	
+	public Lyrics(Context context, Track track, String[] sources, Boolean autoSave) {
+		init(context, track, sources, autoSave);
+	}
+	
+	private void init(Context context, Track track, String[] sources, Boolean autoSave) {
+		mContext = context;
 		mTrack = track;
 		mSources = sources;
-		init();
-	}
-	
-	private void init() {
+		mAutoSave = (autoSave == null)? useAutoSave() : autoSave;
+		
 		mReader = new LyricReader(mTrack);
 		loadProviders(mSources);
 		mLyrics = null;
 	}
 	
 	private void loadProviders(String[] sources) {
-		if (sources == null) {
-			// All providers
-			loadProvidersFromList(null);
-		} else {
-			loadProvidersFromList(sources);
-		}
-	}
-	
-	private void loadProvidersFromList(String[] providers) {
-		ProvidersCollection coll = new ProvidersCollection(providers);
+		ProvidersCollection coll = new ProvidersCollection(mContext, sources);
 		mProviders = coll.toArray(mTrack);
 	}
 	
@@ -83,6 +91,10 @@ public class Lyrics {
 	public void fetchLyrics() {
 		mProviderIndex = -1;
 		useNextProvider();
+	}
+	
+	public void saveLyrics() {
+		mReader.save(mLyrics);
 	}
 	
 	private void useNextProvider() {
@@ -121,6 +133,7 @@ public class Lyrics {
 		Message message = Message.obtain(mLyrHandler, Lyrics.DID_ERROR, provider.getSource());
 		mLyrHandler.sendMessage(message);
 		
+		mLyrics = null;
 		useNextProvider();
 	}
 	
@@ -141,11 +154,10 @@ public class Lyrics {
 		
 		mLyrics = provider.getLyrics();
 		if (mLyrics != null) {
-			// TODO: here should not save automatically !
-        	mReader.save(mLyrics);
-        	//String[] content = mReader.getContent();
-    		//mLyrics = content[1];
-    		
+			if (mAutoSave) {
+				saveLyrics();
+			}
+			
 			Message message = Message.obtain(mLyrHandler, Lyrics.DID_LOAD, provider.getSource());
     		mLyrHandler.sendMessage(message);
 		}
@@ -157,6 +169,17 @@ public class Lyrics {
 		
 		Message message = Message.obtain(mLyrHandler, Lyrics.IS_TRYING, provider.getSource());
 		mLyrHandler.sendMessage(message);
+	}
+	
+	private boolean useAutoSave() {
+		if (mContext == null) {
+			Log.e(TAG, "Context is null.");
+			return false;
+		}
+		SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mContext);
+		 
+		boolean auto_save = SP.getBoolean("auto_save_lyrics", false);
+		return auto_save;
 	}
 	
 	public LyricsProvider getCurrentProvider() {

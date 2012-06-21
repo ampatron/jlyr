@@ -30,6 +30,7 @@
                 <action android:name="net.jjc1138.android.scrobbler.action.MUSIC_STATUS"/>
             </intent-filter>
         </receiver>
+        <activity android:name=".preference.JLyrSourceSelector"></activity>
         
         
         

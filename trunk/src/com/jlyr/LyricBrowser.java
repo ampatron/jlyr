@@ -2,7 +2,10 @@ package com.jlyr;
 
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import com.jlyr.util.LyricReader;
 import com.jlyr.util.Track;
@@ -31,6 +34,7 @@ public class LyricBrowser extends ListActivity {
 	
 	private Menu mMenu;
 	private ArrayAdapter<TrackBrowser.TrackView> la = null;
+	private List<TrackBrowser.TrackView> mList = null;
 	
 	private static final Comparator<TrackBrowser.TrackView> mComparator = new Comparator<TrackBrowser.TrackView>() {
 
@@ -42,8 +46,6 @@ public class LyricBrowser extends ListActivity {
 		}
 		
 	};
-	
-	private static final String[] dialogItems = new String[] {"View", "Delete", "Reload"};
 	
 	public static final String TAG = "JLyrBrowser"; 
 	
@@ -63,8 +65,10 @@ public class LyricBrowser extends ListActivity {
     	
         final ListView lv = getListView();
         lv.setTextFilterEnabled(true);
-
-        la = new ArrayAdapter<TrackBrowser.TrackView>(this, R.layout.list_item);
+        
+        mList = new ArrayList<TrackBrowser.TrackView>();
+        
+        la = new ArrayAdapter<TrackBrowser.TrackView>(this, R.layout.list_item, mList);
         setListAdapter(la);
         
         Handler handler = new Handler() {
@@ -80,12 +84,15 @@ public class LyricBrowser extends ListActivity {
 				    	MenuItem mi = mMenu.getItem(0);
 				    	mi.setEnabled(true);
 			    	}
-					la.sort(mComparator);
+					//la.sort(mComparator);
 					break;
 				}
 				case TrackBrowser.ADD: {
 					TrackBrowser.TrackView tv = (TrackBrowser.TrackView) message.obj;
-					la.add(tv);
+					//la.add(tv);
+					int index = Collections.binarySearch(mList, tv, mComparator);
+					mList.add((index < 0) ? (-index - 1) : index, tv);
+					la.notifyDataSetChanged();
 					break;
 				}
 				case TrackBrowser.DID_ERROR: {
@@ -173,6 +180,13 @@ public class LyricBrowser extends ListActivity {
 
     public void showChoiceDialog(TrackBrowser.TrackView tv) {
     	final Track track = tv.getTrack();
+    	
+    	String[] dialogItems = new String[] {
+    			getString(R.string.view),
+    			getString(R.string.delete),
+    			getString(R.string.reload)
+    	};
+    	
     	AlertDialog.Builder builder = new AlertDialog.Builder(this); 
     	builder.setTitle(tv.toString())
     		   .setItems(dialogItems, new DialogInterface.OnClickListener() {

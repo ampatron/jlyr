@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dialogTitle="@string/settings_notification"
+        android:entries="@array/notificationOptions"
+        android:entryValues="@array/notificationOptionsValues"
+        android:key="notifications"
+        android:negativeButtonText="@android:string/cancel"
+        android:positiveButtonText="@android:string/ok"
+        android:title="@string/settings_notification" />
+
+    <PreferenceCategory android:title="@string/settings_display_category" >
+        <EditTextPreference
+            android:key="viewer_font_size"
+            android:maxLength="2"
+            android:numeric="integer"
+            android:title="@string/settings_viewer_font_size" />
+
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            alphaSlider="false"
+            android:defaultValue="@integer/COLOR_WHITE"
+            android:key="viewer_font_color"
+            android:title="@string/settings_viewer_font_color" />
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            alphaSlider="false"
+            android:defaultValue="@integer/COLOR_BLACK"
+            android:key="viewer_bg_color"
+            android:title="@string/settings_viewer_bg_color" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_behavior_category" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="auto_save_lyrics"
+            android:summaryOff="@string/settings_dont_auto_save_lyrics"
+            android:summaryOn="@string/settings_do_auto_save_lyrics"
+            android:title="@string/settings_auto_save_lyrics" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="auto_fetch_lyrics"
+            android:summaryOff="@string/settings_dont_auto_fetch_lyrics"
+            android:summaryOn="@string/settings_do_auto_fetch_lyrics"
+            android:title="@string/settings_auto_fetch_lyrics" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_providers_category" >
+        <com.jlyr.preference.ProvidersPreference
+            android:defaultValue=""
+            android:key="providers"
+            android:summary="@string/settings_providers_summary"
+            android:title="@string/settings_providers" />
+
+        <com.jlyr.preference.ResetStringPreference
+            android:defaultValue=""
+            android:key="providers_reset"
+            resetKey="providers"
+            android:summary="@string/settings_providers_reset_summary"
+            android:title="@string/settings_providers_reset" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

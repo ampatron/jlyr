@@ -10,12 +10,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.jlyr.util.InternalTrackTransmitter;
 import com.jlyr.util.LyricReader;
+import com.jlyr.util.Lyrics;
 import com.jlyr.util.Track;
 
 public class LyricService extends Service {
@@ -139,33 +142,81 @@ public class LyricService extends Service {
 		}
 	}
 	
-	private String useNotification() {
+	private boolean useAutoFetch() {
 		SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		 
-		String notifications = SP.getString("notifications", "0");
-		return notifications;
+		boolean auto_fetch = SP.getBoolean("auto_fetch_lyrics", false);
+		return auto_fetch;
 	}
 	
-	private void showNotification() {
-		String notif = useNotification();
+	private boolean useNotification() {
+		SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		 
+		String notif = SP.getString("notifications", "0");
+		
 		if (notif.equals("0")) {
-			return;
+			// Never show
+			return false;
+		} else if (notif.equals("1")) {
+			// Always show
+			return true;
 		} else if (notif.equals("2")) {
+			// Show only if saved
 			LyricReader lr = new LyricReader(mCurrentTrack);
 			File file = lr.getFile();
 			if (file == null || !file.exists()) {
 				Log.i(TAG, "File " + file + " does not exist.");
-				return;
+				return false;
 			}
 		} else if (notif.equals("3")) {
+			// Show only if not saved
 			LyricReader lr = new LyricReader(mCurrentTrack);
 			File file = lr.getFile();
 			if (file != null && file.exists()) {
 				Log.i(TAG, "File " + file + " exists already.");
-				return;
+				return false;
 			}
 		}
-		
+		return false;
+	}
+	
+	private Handler getLoadHandler(final Lyrics lyrics) {
+    	Handler handler = new Handler() {
+			public void handleMessage(Message message) {
+				switch (message.what) {
+				case Lyrics.DID_TRY:
+					break;
+				case Lyrics.DID_LOAD:
+					if (useNotification()) {
+						doShowNotification();
+					}
+					break;
+				case Lyrics.DID_FAIL:
+				case Lyrics.DID_ERROR:
+					if (useNotification()) {
+						doShowNotification();
+					}
+					break;
+				case Lyrics.IS_TRYING:
+					break;
+				}
+			}
+		};
+    	return handler;
+    }
+	
+	private void showNotification() {
+		// Handle auto-fetching lyrics
+		if (useAutoFetch()) {
+			Lyrics lyrics = new Lyrics(getBaseContext(), mCurrentTrack);
+			lyrics.loadLyrics(getLoadHandler(lyrics));
+		} else if (useNotification()) {
+			doShowNotification();
+		}
+	}
+	
+	private void doShowNotification() {
+		// Show the notification regardless of settings and lyrics fetched or saved or not
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 		
@@ -190,6 +241,7 @@ public class LyricService extends Service {
 	}
 	
 	private void clearNotification() {
+		// Clear the notification regardless of its existence, no problem in clearing notifications if it does not
 		String ns = Context.NOTIFICATION_SERVICE;
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 		

@@ -35,7 +35,7 @@ public class LyricSearch extends Activity {
         mSources = (MultiSpinner) findViewById(R.id.sources_spinner);
         mBtn = (Button) findViewById(R.id.search_btn);
         
-        ProvidersCollection providerColl = new ProvidersCollection(null);
+        ProvidersCollection providerColl = new ProvidersCollection(getBaseContext(), null);
         String[] sources = (String[]) providerColl.getSources().toArray();
         
         mSources.setItems(Arrays.asList(sources), "All", new MultiSpinner.MultiSpinnerListener() {

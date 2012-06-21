@@ -78,10 +78,18 @@ public class MetroLyricsProvider extends LyricsProvider {
 		String title = null;
 		if (title_el == null) {
 			Log.w(TAG, "No title tag");
+			doFail();
+            return null;
 		} else {
 			title = title_el.text();
 			int end = title.indexOf(" LYRICS");
-			title = title.substring(0, end);
+			if (end == -1) {
+				Log.w(TAG, "Invalid title tag: " + title);
+				doFail();
+	            return null;
+			} else {
+				title = title.substring(0, end);
+			}
 		}
 		
 		Elements els = doc.select("div#lyrics-body > p > span, div#lyrics-body > p > br");

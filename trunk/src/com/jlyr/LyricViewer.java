@@ -152,7 +152,7 @@ public class LyricViewer extends Activity {
     		mMenu.setGroupEnabled(0, false);
     	}
     	
-    	mLyrics = new Lyrics(mTrack, mSources);
+    	mLyrics = new Lyrics(getBaseContext(), mTrack, mSources);
     	
     	isLoading = true;
     	mLyrics.loadLyrics(getLoadHandler());
@@ -255,6 +255,10 @@ public class LyricViewer extends Activity {
                 fillLyrics();
                 return true;
             
+            case R.id.save_menu_item:
+                mLyrics.saveLyrics();
+                return true;
+            
             case R.id.delete_menu_item:
             	doDelete();
             	finish();
@@ -263,7 +267,7 @@ public class LyricViewer extends Activity {
             case R.id.source_menu_item:
             	AlertDialog.Builder builder = new AlertDialog.Builder(this);
             	
-            	ProvidersCollection providerColl = new ProvidersCollection(null);
+            	ProvidersCollection providerColl = new ProvidersCollection(getBaseContext(), null);
                 mAllSources = (String[]) providerColl.getSources().toArray();
             	
                 mSelectedSources = new boolean[mAllSources.length];
@@ -314,6 +318,8 @@ public class LyricViewer extends Activity {
     private void doDelete() {
     	LyricReader reader = new LyricReader(mTrack);
   		File file = reader.getFile();
-  		file.delete();
+  		if (file.exists()) {
+  			file.delete();
+  		}
     }
 }
