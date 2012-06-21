@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Main Menu Items -->
+    <string-array name="main_list">
+        <item>En Cours de Lecture</item>
+        <item>Chercher des Paroles</item>
+        <item>Parcourir les Paroles</item>
+        <item>Options</item>
+        <item>A Propos</item>
+    </string-array>
+    
+    <!-- Notifications -->
+    <string name="notification_title">Lire les paroles</string>
+    
+    <!-- Meta -->
+    <string name="app_name">JLyr Paroles</string>
+    
+    <!-- Lyrics Viewer -->
+    <string name="lyrics_not_found">On n\'a pas trouver les paroles sur Internet.</string>
+    <string name="no_track_specified">Aucune chanson est en cours de lecture.</string>
+    
+    <!-- Lyrics Viewer Menu -->
+    <string name="reload">Recharger</string>
+    <string name="delete">Effacer</string>
+    <string name="source">Source</string>
+    <string name="save">Sauvegarder</string>
+    
+    <!-- Lyrics Browser Menu -->
+    <string name="wipe_lyrics">Effacer Tous</string>
+    <string name="now_playing">En Cours de Lecture</string>
+    
+    <!-- Lyrics Browser Long Press Menu -->
+    <string name="view">Lire</string>
+    
+    <!-- Lyrics Searcher Form -->
+    <string name="search_title">Titre</string>
+    <string name="search_artist">Artiste</string>
+    <string name="search_source">Source</string>
+    <string name="search_button">Chercher</string>
+    
+    <!-- Settings Categories -->
+    <string name="settings_display_category">Lecteur des Paroles</string>
+    <string name="settings_behavior_category">Recherche des Paroles</string>
+    <string name="settings_providers_category">Source des Paroles</string>
+    
+    <!-- Notifications -->
+    <string name="settings_notification">Notifications</string>
+    
+    <!-- Viewer Font -->
+    <string name="settings_viewer_font_size">Taille du caractère</string>
+    <string name="settings_viewer_font_color">Couleur du caractère</string>
+    
+    <!-- Viewer Background -->
+    <string name="settings_viewer_bg_color">Couleur du Fond d\'Ecran</string>
+    
+    <!-- Fetcher Behavior -->
+    <string name="settings_auto_save_lyrics">Sauvegarde des paroles</string>
+    <string name="settings_do_auto_save_lyrics">Les paroles seront automatiquement sauvegardées</string>
+    <string name="settings_dont_auto_save_lyrics">Les paroles ne seront PAS automatiquement sauvegardées</string>
+    
+    <string name="settings_auto_fetch_lyrics">Recherche des paroles</string>
+    <string name="settings_do_auto_fetch_lyrics">Les paroles de la chanson en cours de lecture seront recherchées automatiquement</string>
+    <string name="settings_dont_auto_fetch_lyrics">Les paroles de la chanson en cours de lecture ne seront PAS recherchées automatiquement</string>
+    
+    <!-- Providers -->
+    <string name="settings_providers">Choisir les sources des paroles</string>
+    <string name="settings_providers_summary">Changer l\'ordre des sources. Glisser pour effacer une source.</string>
+    
+    <string name="settings_providers_reset">Effacer préférences des sources</string>
+    <string name="settings_providers_reset_summary">Changer les sources aux valeurs initiales</string>
+
+    <!-- About Dialog -->
+    <string name="about">Voyez toutes vos paroles de chansons préférées d\'une maniere simple, sans publicités. Si vous avez des commentaires, des bugs ou des propositions: jadkik94@gmail.com</string>
+    
+</resources>

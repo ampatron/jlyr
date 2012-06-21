@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="notificationOptions">
+        <item>Jamais</item>
+        <item>Toujours</item>
+        <item>Si les paroles sont sauvegardées</item>
+        <item>Si les paroles ne sont pas sauvegardées</item>
+    </string-array>
+    <string-array name="notificationOptionsValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+</resources>
