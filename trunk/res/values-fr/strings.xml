@@ -62,6 +62,10 @@
     <!-- Viewer Background -->
     <string name="settings_viewer_bg_color">Couleur du Fond d\'Ecran</string>
     
+    <!-- Viewer Reset -->
+    <string name="settings_viewer_reset">Effacer préférences du lecteur</string>
+    <string name="settings_viewer_reset_summary">Changer le caractère et fond d\'écran aux valeurs initiales</string>
+    
     <!-- Fetcher Behavior -->
     <string name="settings_auto_save_lyrics">Sauvegarde des paroles</string>
     <string name="settings_do_auto_save_lyrics">Les paroles seront automatiquement sauvegardées</string>

@@ -62,6 +62,10 @@
     <!-- Viewer Background -->
     <string name="settings_viewer_bg_color">Background Color</string>
     
+    <!-- Viewer Reset -->
+    <string name="settings_viewer_reset">Reset Display Settings</string>
+    <string name="settings_viewer_reset_summary">Return font and background settings for viewer to default</string>
+    
     <!-- Fetcher Behavior -->
     <string name="settings_auto_save_lyrics">Auto save lyrics</string>
     <string name="settings_do_auto_save_lyrics">Will automatically save lyrics when fetched</string>

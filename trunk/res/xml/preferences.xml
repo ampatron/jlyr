@@ -28,6 +28,11 @@
             android:defaultValue="@integer/COLOR_BLACK"
             android:key="viewer_bg_color"
             android:title="@string/settings_viewer_bg_color" />
+
+        <com.jlyr.preference.ResetDisplayPreference
+            android:key="viewer_reset"
+            android:summary="@string/settings_viewer_reset_summary"
+            android:title="@string/settings_viewer_reset" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_behavior_category" >
         <CheckBoxPreference
