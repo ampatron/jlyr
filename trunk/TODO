@@ -11,4 +11,3 @@
 - add canRead() and canSave() methods to providers, and provide the user with a choice to save there and there and read there and there. LyricReader will be a provider.
 - use @color instead of @integer for colors?
 - in LyricViewer, when changing orientation, preserve scroll position
-- add a "search in DuckDuckGo" or Google option, will open in browser (or maybe WebView, or use a search API)

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="search_engines">
+        <item >DuckDuckGo</item>
+        <item >Google</item>
+        <item >Bing</item>
+        <item >Yahoo</item>
+    </string-array>
+    
+</resources>

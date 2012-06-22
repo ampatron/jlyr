@@ -1,5 +1,7 @@
 package com.jlyr;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,18 +11,24 @@ import cz.destil.settleup.gui.MultiSpinner;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 public class LyricSearch extends Activity {
 	
 	private EditText mTitle;
 	private EditText mArtist;
-	private Button mBtn;
+	
 	private MultiSpinner mSources;
+	private Button mBtn;
+	
+	private Spinner mSearchEngine;
+	private Button mSearchBrowserBtn;
 	
 	public static final String TAG = "JLyrSearch"; 
 	
@@ -32,13 +40,17 @@ public class LyricSearch extends Activity {
         
         mTitle = (EditText) findViewById(R.id.title_txt);
         mArtist = (EditText) findViewById(R.id.artist_txt);
+        
         mSources = (MultiSpinner) findViewById(R.id.sources_spinner);
         mBtn = (Button) findViewById(R.id.search_btn);
+        
+        mSearchEngine = (Spinner) findViewById(R.id.search_engine_spinner);
+        mSearchBrowserBtn = (Button) findViewById(R.id.search_browser_btn);
         
         ProvidersCollection providerColl = new ProvidersCollection(getBaseContext(), null);
         String[] sources = (String[]) providerColl.getSources().toArray();
         
-        mSources.setItems(Arrays.asList(sources), "All", new MultiSpinner.MultiSpinnerListener() {
+        mSources.setItems(Arrays.asList(sources), getString(R.string.all), new MultiSpinner.MultiSpinnerListener() {
 			@Override
 			public void onItemsSelected(boolean[] selected) {
 			}
@@ -70,5 +82,41 @@ public class LyricSearch extends Activity {
             	startActivity(intent);
             }
         });
+        
+        mSearchBrowserBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	String title = (String) mTitle.getText().toString();
+            	String artist = (String) mArtist.getText().toString();
+            	String searchEngine = (String) mSearchEngine.getSelectedItem();
+            	
+            	Log.i(TAG, "Searching for: " + title + " - " + artist + " on " + searchEngine);
+            	
+            	String search_query = artist + " - " + title + " lyrics";
+            	if (searchEngine.equals("DuckDuckGo")) {
+            		search_query = artist + " - " + title + " lyrics";
+            	} else if (searchEngine.equals("Google")) {
+            		search_query = "!g " + artist + " - " + title + " lyrics";
+            	} else if (searchEngine.equals("Bing")) {
+            		search_query = "!b " + artist + " - " + title + " lyrics";
+            	} else if (searchEngine.equals("Yahoo")) {
+            		search_query = "!y " + artist + " - " + title + " lyrics";
+            	}
+        		String URL = "http://www.duckduckgo.com/?q=" + enc(search_query);
+            	
+        		Log.i(TAG, "The URL is: " + URL);
+        		
+            	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
+            	startActivity(intent);
+            }
+        });
     }
+    
+    protected static String enc(String s) {
+		try {
+			return URLEncoder.encode(s, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			Log.e(TAG, "URLEncoder lacks support for UTF-8!?");
+			return null;
+		}
+	}
 }

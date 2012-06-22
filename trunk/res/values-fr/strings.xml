@@ -34,10 +34,18 @@
     <string name="view">Lire</string>
     
     <!-- Lyrics Searcher Form -->
+    <string name="all">Tous</string>
+    
     <string name="search_title">Titre</string>
     <string name="search_artist">Artiste</string>
+    
+    <string name="search_help_text">Chercher avec l\'application</string>
     <string name="search_source">Source</string>
     <string name="search_button">Chercher</string>
+    
+    <string name="search_browser_help_text">Chercher avec le navigateur (via DuckDuckGo)</string>
+    <string name="search_engine">Moteur</string>
+    <string name="search_browser_button">Chercher</string>
     
     <!-- Settings Categories -->
     <string name="settings_display_category">Lecteur des Paroles</string>
