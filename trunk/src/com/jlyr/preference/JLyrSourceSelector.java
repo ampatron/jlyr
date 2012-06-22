@@ -109,9 +109,12 @@ public class JLyrSourceSelector extends ListActivity {
     
     private void doMove(int from, int to) {
 		String obj_from = mArray.get(from);
-        String obj_to = mArray.get(to);
-        mArray.set(from, obj_to);
-        mArray.set(to, obj_from);
+        mAdapter.remove(obj_from);
+        mArray.add(to, obj_from);
+        // This does a switch, which is not what we want.
+        //String obj_to = mArray.get(to);
+        //mArray.set(from, obj_to);
+        //mArray.set(to, obj_from);
         mAdapter.notifyDataSetChanged();
 	}
     
