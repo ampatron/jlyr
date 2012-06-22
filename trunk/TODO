@@ -10,4 +10,3 @@
 - add edit functionality to the saved lyrics.
 - add canRead() and canSave() methods to providers, and provide the user with a choice to save there and there and read there and there. LyricReader will be a provider.
 - use @color instead of @integer for colors?
-- in LyricViewer, when changing orientation, preserve scroll position

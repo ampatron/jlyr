@@ -43,6 +43,8 @@ public class LyricViewer extends Activity {
 	String[] mAllSources = null;
 	boolean[] mSelectedSources = null;
 	
+	int mScrollY = 0;
+	
 	public static final String TAG = "JLyrViewer"; 
 	
 	private class Remember {
@@ -50,6 +52,7 @@ public class LyricViewer extends Activity {
 		public Lyrics lyrics = null;
 		public boolean loading = false;
 		public String[] sources = null;
+		public int scrollY = 0;
 		public Handler handler;
 	}
 	
@@ -93,6 +96,8 @@ public class LyricViewer extends Activity {
             mSources = r.sources;
             isLoading = r.loading;
             
+            mScrollY = r.scrollY;
+            
             if (mTrack == null) {
     			mText.setText(getText(R.string.no_track_specified));
     			return;
@@ -118,6 +123,7 @@ public class LyricViewer extends Activity {
         		lyrics = mLyrics;
         		loading = isLoading;
         		sources = mSources;
+        		scrollY = mText.getScrollY();
         	}
         	
         };
@@ -201,6 +207,8 @@ public class LyricViewer extends Activity {
         String lyricsStr = mLyrics.getLyrics();
         
         mText.setText(trackInfoStr + "\n" + ((lyricsStr == null)? getText(R.string.lyrics_not_found) : lyricsStr));
+        
+        mText.scrollTo(0, mScrollY);
     }
     
     private Track getTrackFromIntent() {
