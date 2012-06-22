@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.jlyr.util.LyricReader;
+import com.jlyr.util.LyricsWebSearch;
 import com.jlyr.util.Track;
 import com.jlyr.util.TrackBrowser;
 import com.jlyr.util.TrackBrowser.TrackView;
@@ -178,13 +179,14 @@ public class LyricBrowser extends ListActivity {
         return false;
     }
 
-    public void showChoiceDialog(TrackBrowser.TrackView tv) {
+    public void showChoiceDialog(final TrackBrowser.TrackView tv) {
     	final Track track = tv.getTrack();
     	
     	String[] dialogItems = new String[] {
     			getString(R.string.view),
     			getString(R.string.delete),
-    			getString(R.string.reload)
+    			getString(R.string.reload),
+    			getString(R.string.search_browser_button)
     	};
     	
     	AlertDialog.Builder builder = new AlertDialog.Builder(this); 
@@ -202,6 +204,9 @@ public class LyricBrowser extends ListActivity {
     				   case 2:
     					   doDelete(track);
     					   doView(track);
+    					   break;
+    				   case 3:
+    					   showSearchDialog(tv);
     					   break;
     				   default:
     					   Log.w(TAG, "Unknown item selected: " + item);
@@ -231,4 +236,25 @@ public class LyricBrowser extends ListActivity {
   		file.delete();
     }
     
+    public void showSearchDialog(TrackBrowser.TrackView tv) {
+    	final Track track = tv.getTrack();
+    	
+    	final String[] dialogItems = getResources().getStringArray(R.array.search_engines);
+    	
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this); 
+    	builder.setTitle(getString(R.string.search_engine))
+    		   .setItems(dialogItems, new DialogInterface.OnClickListener() {
+    			   public void onClick(DialogInterface dialog, int item) {
+    				   String searchEngine = dialogItems[item];
+    				   doSearch(track, searchEngine);
+    			   }
+    		   });
+    	AlertDialog dialog = builder.create();
+    	dialog.show();
+    }
+    
+    public void doSearch(Track track, String searchEngine) {
+    	LyricsWebSearch lws = new LyricsWebSearch(getBaseContext(), track, searchEngine);
+    	lws.start();
+    }
 }

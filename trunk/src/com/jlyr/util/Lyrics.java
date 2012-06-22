@@ -155,11 +155,16 @@ public class Lyrics {
 		mLyrics = provider.getLyrics();
 		if (mLyrics != null) {
 			if (mAutoSave) {
+				Log.i(TAG, "Will save.");
 				saveLyrics();
+			} else {
+				Log.i(TAG, "Will not save.");
 			}
 			
 			Message message = Message.obtain(mLyrHandler, Lyrics.DID_LOAD, provider.getSource());
     		mLyrHandler.sendMessage(message);
+		} else {
+			Log.e(TAG, "Lyrics is null!");
 		}
 	}
 	
@@ -179,6 +184,7 @@ public class Lyrics {
 		SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(mContext);
 		 
 		boolean auto_save = SP.getBoolean("auto_save_lyrics", false);
+		
 		return auto_save;
 	}
 	

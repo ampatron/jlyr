@@ -70,6 +70,10 @@
     <string name="settings_auto_fetch_lyrics">Auto fetch lyrics</string>
     <string name="settings_do_auto_fetch_lyrics">Will fetch lyrics as soon as a now playing song is played</string>
     <string name="settings_dont_auto_fetch_lyrics">Will NOT fetch lyrics as soon as a now playing song is played</string>
+
+    <string name="settings_fetch_wifi_only">Only fetch lyrics on WiFi</string>
+    <string name="settings_do_fetch_wifi_only">Will fetch lyrics only if connected on Wifi</string>
+    <string name="settings_dont_fetch_wifi_only">Will fetch lyrics regardless of Wifi connectivity</string>
     
     <!-- Providers -->
     <string name="settings_providers">Choose Default Providers</string>

@@ -236,12 +236,18 @@ public class LyricViewer extends Activity {
     }
     
     private Track getPlayingTrack() {
-    	Track lastTrack = InternalTrackTransmitter.getLastTrack();
-        if (lastTrack == null) {
+    	Track track = InternalTrackTransmitter.getLastTrack();
+        if (track == null) {
+        	Log.e(TAG, "A null track got through!! (Ignoring it)");
         	return null;
-        } else {
-        	return lastTrack;
         }
+    	if (track.equals(Track.SAME_AS_CURRENT)) {
+			// this only happens for apps implementing Scrobble Droid's API
+			Log.d(TAG, "Got a SAME_AS_CURRENT track");
+			// TODO: improve now playing detection.
+			return null;
+		}
+    	return track;
     }
     
     @Override

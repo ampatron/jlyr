@@ -71,6 +71,10 @@
     <string name="settings_do_auto_fetch_lyrics">Les paroles de la chanson en cours de lecture seront recherchées automatiquement</string>
     <string name="settings_dont_auto_fetch_lyrics">Les paroles de la chanson en cours de lecture ne seront PAS recherchées automatiquement</string>
     
+    <string name="settings_fetch_wifi_only">Recherche des paroles sur WiFi uniquement</string>
+    <string name="settings_do_fetch_wifi_only">Les paroles de la chanson en cours de lecture ne seront recherchées que sur WiFi</string>
+    <string name="settings_dont_fetch_wifi_only">Les paroles de la chanson en cours de lecture seront recherchées sans tenir compte de la connection WiFi</string>
+    
     <!-- Providers -->
     <string name="settings_providers">Choisir les sources des paroles</string>
     <string name="settings_providers_summary">Changer l\'ordre des sources. Glisser pour effacer une source.</string>

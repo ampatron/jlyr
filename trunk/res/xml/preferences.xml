@@ -31,7 +31,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_behavior_category" >
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="auto_save_lyrics"
             android:summaryOff="@string/settings_dont_auto_save_lyrics"
             android:summaryOn="@string/settings_do_auto_save_lyrics"
@@ -42,6 +42,12 @@
             android:summaryOff="@string/settings_dont_auto_fetch_lyrics"
             android:summaryOn="@string/settings_do_auto_fetch_lyrics"
             android:title="@string/settings_auto_fetch_lyrics" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="fetch_wifi_only"
+            android:summaryOff="@string/settings_dont_fetch_wifi_only"
+            android:summaryOn="@string/settings_do_fetch_wifi_only"
+            android:title="@string/settings_fetch_wifi_only" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_providers_category" >
         <com.jlyr.preference.ProvidersPreference

@@ -9,6 +9,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -146,7 +148,27 @@ public class LyricService extends Service {
 		SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		 
 		boolean auto_fetch = SP.getBoolean("auto_fetch_lyrics", false);
-		return auto_fetch;
+		
+		if (!auto_fetch) {
+			Log.i(TAG, "Auto-fetch is off. Will not fetch lyrics.");
+			return false;
+		}
+		 
+		boolean wifi_only = SP.getBoolean("fetch_wifi_only", false);
+		
+		if (!wifi_only) {
+			return true;
+		}
+		
+		ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+		if (mWifi.isConnected()) {
+			return true;
+		} else {
+			Log.i(TAG, "Wifi is off. Will not fetch lyrics.");
+			return false;
+		}
 	}
 	
 	private boolean useNotification() {
@@ -208,7 +230,7 @@ public class LyricService extends Service {
 	private void showNotification() {
 		// Handle auto-fetching lyrics
 		if (useAutoFetch()) {
-			Lyrics lyrics = new Lyrics(getBaseContext(), mCurrentTrack);
+			Lyrics lyrics = new Lyrics(getBaseContext(), mCurrentTrack, (String[]) null, true);
 			lyrics.loadLyrics(getLoadHandler(lyrics));
 		} else if (useNotification()) {
 			doShowNotification();

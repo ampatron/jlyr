@@ -1,17 +1,16 @@
 package com.jlyr;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 
+import com.jlyr.util.LyricsWebSearch;
 import com.jlyr.util.ProvidersCollection;
+import com.jlyr.util.Track;
 
 import cz.destil.settleup.gui.MultiSpinner;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -91,32 +90,11 @@ public class LyricSearch extends Activity {
             	
             	Log.i(TAG, "Searching for: " + title + " - " + artist + " on " + searchEngine);
             	
-            	String search_query = artist + " - " + title + " lyrics";
-            	if (searchEngine.equals("DuckDuckGo")) {
-            		search_query = artist + " - " + title + " lyrics";
-            	} else if (searchEngine.equals("Google")) {
-            		search_query = "!g " + artist + " - " + title + " lyrics";
-            	} else if (searchEngine.equals("Bing")) {
-            		search_query = "!b " + artist + " - " + title + " lyrics";
-            	} else if (searchEngine.equals("Yahoo")) {
-            		search_query = "!y " + artist + " - " + title + " lyrics";
-            	}
-        		String URL = "http://www.duckduckgo.com/?q=" + enc(search_query);
+            	Track track = new Track(artist, title, null, null);
             	
-        		Log.i(TAG, "The URL is: " + URL);
-        		
-            	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
-            	startActivity(intent);
+            	LyricsWebSearch lws = new LyricsWebSearch(getBaseContext(), track, searchEngine);
+            	lws.start();
             }
         });
     }
-    
-    protected static String enc(String s) {
-		try {
-			return URLEncoder.encode(s, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			Log.e(TAG, "URLEncoder lacks support for UTF-8!?");
-			return null;
-		}
-	}
 }
