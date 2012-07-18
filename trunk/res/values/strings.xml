@@ -10,6 +10,14 @@
         <item>About</item>
     </string-array>
     
+    <string-array name="main_list_details">
+        <item>No track is playing</item>
+        <item>Search using the classic fetching system or via a search engine</item>
+        <item>View your saved lyrics</item>
+        <item>Customize the look and functionality of the application</item>
+        <item>Jlyr Lyrics</item>
+    </string-array>
+    
     <!-- Notifications -->
     <string name="notification_title">View Lyrics</string>
     
@@ -25,6 +33,8 @@
     <string name="delete">Delete</string>
     <string name="source">Source</string>
     <string name="save">Save</string>
+    <string name="browser">Browser</string>
+    <string name="info">Info</string>
     
     <!-- Lyrics Browser Menu -->
     <string name="wipe_lyrics">Wipe</string>

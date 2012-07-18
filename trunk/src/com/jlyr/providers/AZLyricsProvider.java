@@ -7,6 +7,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 
 import com.jlyr.util.Track;
 
@@ -119,7 +120,13 @@ public class AZLyricsProvider extends LyricsProvider {
 			title = title.replace(" LYRICS - ", " - ");
 		}
 		
-		Element body = doc.select("div#main div").get(3);
+		Elements divs = doc.select("div#main div");
+		if (divs.size()<4) {
+			Log.e(TAG, "No body div");
+			doFail();
+			return null;
+		}
+		Element body = divs.get(3);
 
 		if (body == null) {
 			Log.e(TAG, "No lyrics div tag");

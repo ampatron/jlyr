@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.jlyr.util.LyricsWebSearch;
+import com.jlyr.util.NowPlaying;
 import com.jlyr.util.ProvidersCollection;
 import com.jlyr.util.Track;
 
@@ -22,6 +23,7 @@ public class LyricSearch extends Activity {
 	
 	private EditText mTitle;
 	private EditText mArtist;
+	private Button mNowPlayingBtn;
 	
 	private MultiSpinner mSources;
 	private Button mBtn;
@@ -40,6 +42,8 @@ public class LyricSearch extends Activity {
         mTitle = (EditText) findViewById(R.id.title_txt);
         mArtist = (EditText) findViewById(R.id.artist_txt);
         
+        mNowPlayingBtn = (Button) findViewById(R.id.now_playing_btn);
+        
         mSources = (MultiSpinner) findViewById(R.id.sources_spinner);
         mBtn = (Button) findViewById(R.id.search_btn);
         
@@ -54,6 +58,17 @@ public class LyricSearch extends Activity {
 			public void onItemsSelected(boolean[] selected) {
 			}
 		});
+        
+        mNowPlayingBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	NowPlaying np = new NowPlaying();
+            	Track track = np.getTrack();
+            	if (track != null) {
+	            	mTitle.setText(track.getTitle());
+	            	mArtist.setText(track.getArtist());
+            	}
+            }
+        });
         
         mBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

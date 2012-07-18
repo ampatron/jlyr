@@ -48,7 +48,8 @@ public class Track {
 	
 	@Override
 	public String toString() {
-		return "Track [mAlbum=" + mAlbum + "(" + mYear + ")" + ", mArtist=" + mArtist + ", mTitle=" + mTitle + "]";
+		return mArtist + " - " + mTitle;
+		//return "Track [mAlbum=" + mAlbum + "(" + mYear + ")" + ", mArtist=" + mArtist + ", mTitle=" + mTitle + "]";
 	}
 
 	/**

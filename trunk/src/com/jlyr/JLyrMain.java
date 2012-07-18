@@ -1,16 +1,27 @@
 package com.jlyr;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.jlyr.util.Lyrics;
+import com.jlyr.util.NowPlaying;
+import com.jlyr.util.Track;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
 import android.util.Log;
 
 public class JLyrMain extends ListActivity {
@@ -28,19 +39,48 @@ public class JLyrMain extends ListActivity {
     private void populateList() {
         ListView lv = getListView();
         lv.setTextFilterEnabled(true);
-
+        
         Resources res = getResources();
-        String[] array = res.getStringArray(R.array.main_list);
+        String[] items = res.getStringArray(R.array.main_list);
+        String[] details = res.getStringArray(R.array.main_list_details);
         
-        ArrayAdapter<String> la = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, array);
-        setListAdapter(la);
+        NowPlaying np = new NowPlaying();
+        Track track = np.getTrack();
+        if (track != null) {
+        	details[0] = track.toString();
+        }
         
+        NowPlaying.setHandler(new Handler() {
+			public void handleMessage(Message message) {
+				Log.i(TAG, "Got a message!");
+			}
+		});
+        
+        List<HashMap<String, String>> mArray = new ArrayList<HashMap<String, String>>();
+        for (int i = 0; i<items.length; i++) {
+        	HashMap<String, String> map = new HashMap<String, String>();
+        	map.put("item", items[i]);
+        	map.put("details", details[i]);
+        	mArray.add(map);
+        }
+        String[] from = {"item", "details"};
+        int[] to = {android.R.id.text1, android.R.id.text2};
+
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+		SimpleAdapter adapter = new SimpleAdapter(this.getApplicationContext(), mArray, android.R.layout.simple_list_item_2, from, to);
+		lv.setAdapter(adapter);
+		
         lv.setOnItemClickListener(new OnItemClickListener() {
           public void onItemClick(AdapterView<?> parent, View view,
               int position, long id) {
         	Intent intent = null;
         	switch (position) {
         	case 0:
+        		NowPlaying np = new NowPlaying();
+                Track track = np.getTrack();
+                if (track == null) {
+                	break;
+                }
         		intent = new Intent(JLyrMain.this, LyricViewer.class);
         		break;
         	case 1:

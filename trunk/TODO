@@ -1,4 +1,4 @@
-- ScrobbleDroidReceiver handle SAME_AS_CURRENT tracks better. What if it's a null SAME_AS_CURRENT?
+/- ScrobbleDroidReceiver handle SAME_AS_CURRENT tracks better. What if it's a null SAME_AS_CURRENT?
 - add more providers
 - add more receivers
 - allow to choose receivers (like in Simple Last.fm Scrobbler)
@@ -8,4 +8,7 @@
 - add edit functionality to the saved lyrics.
 - add canRead() and canSave() methods to providers, and provide the user with a choice to save there and there and read there and there. LyricReader will be a provider.
 - use @color instead of @integer for colors?
-- do not try to fetch lyrics if there is no internet connectivity, as there will be tons of "an error occured!" toasts.
+/- do not try to fetch lyrics if there is no internet connectivity, as there will be tons of "an error occured!" toasts.
+/- add a now playing button in search page, to fill the fields with the now playing track
+/- add a menu option in Now playing page to search in web browser
+- add search history

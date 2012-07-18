@@ -32,7 +32,7 @@ public class TrackBrowser implements Runnable {
 			if (mTrack == null) {
 				return "Track is null!";
 			} else {
-				return mTrack.getArtist() + " - " + mTrack.getTitle();
+				return mTrack.toString();
 			}
 		}
 	};

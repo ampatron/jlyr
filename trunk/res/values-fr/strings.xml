@@ -10,6 +10,14 @@
         <item>A Propos</item>
     </string-array>
     
+    <string-array name="main_list_details">
+        <item>Pas de chanson en cours de lecture</item>
+        <item>Chercher via le système ou un moteur de recherche</item>
+        <item>Voire les paroles sauvegarder</item>
+        <item>Customizer le look et les fonctionalités de l\'application</item>
+        <item>Jlyr Paroles</item>
+    </string-array>
+    
     <!-- Notifications -->
     <string name="notification_title">Lire les paroles</string>
     
@@ -25,6 +33,8 @@
     <string name="delete">Effacer</string>
     <string name="source">Source</string>
     <string name="save">Sauvegarder</string>
+    <string name="browser">Navigateur</string>
+    <string name="info">Info</string>
     
     <!-- Lyrics Browser Menu -->
     <string name="wipe_lyrics">Effacer Tous</string>

@@ -19,6 +19,7 @@ public class LyricReader {
 	
 	Track mTrack = null;
 	File mFile = null;
+	String mSource = null;
 	
 	public static final String TAG = "JLyrReader";
 	
@@ -135,15 +136,20 @@ public class LyricReader {
 	}
 	
 	public void save(String response) {
+		save(response, null);
+	}
+	
+	public void save(String response, String source) {
         Log.i(TAG, "Saving lyrics to " + mFile.getAbsolutePath());
         if (mFile.canWrite()) {
         	Log.w(TAG, "Cannot write to file");
         	return;
         }
         String eol = System.getProperty("line.separator");
-        String trackInfo = "title: " + mTrack.getTitle() + eol + 
-        				   "artist: " + mTrack.getArtist() + eol + 
-        				   "album: " + mTrack.getAlbum() + eol;
+        
+        mSource = source;
+        String trackInfo = getInfo();
+        
         try {
         	mFile.getParentFile().mkdirs();
         	mFile.createNewFile();
@@ -157,6 +163,27 @@ public class LyricReader {
         } catch (IOException e) {
         	Log.w(TAG, "Error writing to file", e);
         } 
+	}
+	
+	public String getInfo() {
+		String eol = System.getProperty("line.separator");
+		
+		String[] content = getContent();
+		String[] info = new String[5];
+		if (content[0] != null) {
+			info = content[0].split(eol, 5);
+		}
+		
+		String trackInfo = "";
+		trackInfo += "title: " + mTrack.getTitle() + eol; 
+		trackInfo += "artist: " + mTrack.getArtist() + eol; 
+		trackInfo += "album: " + mTrack.getAlbum() + eol;
+		if (mSource != null) {
+			trackInfo += "source: " + mSource + eol;
+		} else if (info[3] != null) {
+			trackInfo += info[3] + eol;
+		}
+		return trackInfo;
 	}
 	
 	public static String md5(String s) {

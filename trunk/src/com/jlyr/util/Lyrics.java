@@ -4,10 +4,13 @@ import com.jlyr.providers.LyricsProvider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 public class Lyrics {
 	Track mTrack = null;
@@ -20,7 +23,7 @@ public class Lyrics {
 	Context mContext;
 	
 	LyricsProvider[] mProviders = null;
-	int mProviderIndex = 0;
+	int mProviderIndex = -1;
 	
 	public static final String TAG = "JLyrLyrics";
 	
@@ -89,12 +92,19 @@ public class Lyrics {
 	}
 	
 	public void fetchLyrics() {
+		if (!canFetchLyrics()) {
+			Message message = Message.obtain(mLyrHandler, Lyrics.DID_FAIL);
+    		mLyrHandler.sendMessage(message);
+			return;
+		}
 		mProviderIndex = -1;
 		useNextProvider();
 	}
 	
 	public void saveLyrics() {
-		mReader.save(mLyrics);
+		LyricsProvider provider = getCurrentProvider();
+		String source = (provider==null)? null : provider.getSource();
+		mReader.save(mLyrics, source);
 	}
 	
 	private void useNextProvider() {
@@ -188,8 +198,23 @@ public class Lyrics {
 		return auto_save;
 	}
 	
+	private boolean canFetchLyrics() {
+		ConnectivityManager connManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo mNetwork = connManager.getActiveNetworkInfo();
+		
+		if (mNetwork == null) {
+			return false;
+		} else {
+			return mNetwork.isConnected();
+		}
+	}
+	
 	public LyricsProvider getCurrentProvider() {
-		return mProviders[mProviderIndex];
+		if (mProviderIndex == -1) {
+			return null;
+		} else {
+			return mProviders[mProviderIndex];
+		}
 	}
 	
 	public String[] getSources() {

@@ -3,6 +3,8 @@
     <item android:id="@+id/reload_menu_item" android:title="@string/reload"></item>
     <item android:id="@+id/save_menu_item" android:title="@string/save"></item><item android:id="@+id/delete_menu_item" android:title="@string/delete"></item>
     <item android:id="@+id/source_menu_item" android:title="@string/source"></item>
+    <item android:id="@+id/browser_menu_item" android:title="@string/browser"></item>
+    <item android:id="@+id/info_menu_item" android:title="@string/info"></item>
     
     
 

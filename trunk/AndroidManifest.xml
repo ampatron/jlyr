@@ -30,6 +30,20 @@
                 <action android:name="net.jjc1138.android.scrobbler.action.MUSIC_STATUS"/>
             </intent-filter>
         </receiver>
+        <receiver android:name=".receiver.SamsungMusicReceiver" android:enabled="true">
+            <intent-filter>
+                <action android:name="com.samsung.sec.android.MusicPlayer.playstatechanged"/>
+                <action android:name="com.samsung.sec.android.MusicPlayer.playbackcomplete"/>
+                <action android:name="com.samsung.sec.android.MusicPlayer.metachanged"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.AndroidMusicReceiver" android:enabled="true">
+            <intent-filter>
+                <action android:name="com.android.music.playstatechanged"/>
+                <action android:name="com.android.music.playbackcomplete"/>
+                <action android:name="com.android.music.metachanged"/>
+            </intent-filter>
+        </receiver>
         <activity android:name=".preference.JLyrSourceSelector"></activity>
         
         

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.jlyr.util.InternalTrackTransmitter;
+import com.jlyr.util.NowPlaying;
 import com.jlyr.LyricService;
 import com.jlyr.util.Track;
 
@@ -16,6 +16,7 @@ public abstract class AbstractPlayStatusReceiver extends BroadcastReceiver {
 	
 	private Intent mService = null;
 	protected Track mTrack = null;
+	protected Track.State mState = null;
 
 	@Override
 	public final void onReceive(Context context, Intent intent) {
@@ -41,8 +42,8 @@ public abstract class AbstractPlayStatusReceiver extends BroadcastReceiver {
 				throw new IllegalArgumentException("null track");
 			}
 
-			// submit track for the LyricService
-			InternalTrackTransmitter.appendTrack(mTrack);
+			NowPlaying np = new NowPlaying();
+			np.addItem(mTrack, mState);
 
 			// start/call the LyricService
 			context.startService(mService);
@@ -57,7 +58,7 @@ public abstract class AbstractPlayStatusReceiver extends BroadcastReceiver {
 	 * @param state
 	 */
 	protected final void setState(Track.State state) {
-		mService.putExtra("state", state.name());
+		mState = state;
 	}
 
 	/**

@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
+import android.content.res.Resources;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -23,8 +24,9 @@ import android.widget.Toast;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 
-import com.jlyr.util.InternalTrackTransmitter;
 import com.jlyr.util.LyricReader;
+import com.jlyr.util.LyricsWebSearch;
+import com.jlyr.util.NowPlaying;
 import com.jlyr.util.ProvidersCollection;
 import com.jlyr.util.Track;
 import com.jlyr.util.Lyrics;
@@ -42,6 +44,8 @@ public class LyricViewer extends Activity {
 	String[] mSources = null;
 	String[] mAllSources = null;
 	boolean[] mSelectedSources = null;
+	
+	int mSearchEngine = 0; 
 	
 	int mScrollY = 0;
 	
@@ -104,7 +108,7 @@ public class LyricViewer extends Activity {
     		}
             
             if (isLoading) {
-	            String trackInfoStr = mTrack.getArtist() + " - " + mTrack.getTitle();
+	            String trackInfoStr = mTrack.toString();
 	        	mText.setText("Loading lyrics for " + trackInfoStr + " ...");
 	        	r.handler = getLoadHandler();
             } else {
@@ -143,7 +147,7 @@ public class LyricViewer extends Activity {
         	}
 		}
     	
-    	String trackInfoStr = mTrack.getArtist() + " - " + mTrack.getTitle();
+    	String trackInfoStr = mTrack.toString();
     	mText.setText("Loading lyrics for " + trackInfoStr + " ...");
     	
     	if (mSources == null) {
@@ -203,7 +207,7 @@ public class LyricViewer extends Activity {
     	}
     	
     	isLoading = false;
-    	String trackInfoStr = mTrack.getArtist() + " - " + mTrack.getTitle();
+    	String trackInfoStr = mTrack.toString();
         String lyricsStr = mLyrics.getLyrics();
         
         mText.setText(trackInfoStr + "\n" + ((lyricsStr == null)? getText(R.string.lyrics_not_found) : lyricsStr));
@@ -236,18 +240,8 @@ public class LyricViewer extends Activity {
     }
     
     private Track getPlayingTrack() {
-    	Track track = InternalTrackTransmitter.getLastTrack();
-        if (track == null) {
-        	Log.e(TAG, "A null track got through!! (Ignoring it)");
-        	return null;
-        }
-    	if (track.equals(Track.SAME_AS_CURRENT)) {
-			// this only happens for apps implementing Scrobble Droid's API
-			Log.d(TAG, "Got a SAME_AS_CURRENT track");
-			// TODO: improve now playing detection.
-			return null;
-		}
-    	return track;
+    	NowPlaying np = new NowPlaying();
+    	return np.getTrack();
     }
     
     @Override
@@ -321,6 +315,56 @@ public class LyricViewer extends Activity {
                 dialog.show();
             	return true;
                 
+            case R.id.browser_menu_item:
+            	AlertDialog.Builder searchBuilder = new AlertDialog.Builder(this);
+                
+            	Resources res = getResources();
+            	final String[] searchEngines = res.getStringArray(R.array.search_engines);
+            	
+            	searchBuilder.setSingleChoiceItems(searchEngines, mSearchEngine, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						mSearchEngine = which;
+					}
+            		
+            	})
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    	String searchEngine = searchEngines[mSearchEngine];
+                    	
+                    	Log.i(TAG, "Searching for: " + mTrack.toString() + " on " + searchEngine);
+                    	
+                    	LyricsWebSearch lws = new LyricsWebSearch(LyricViewer.this, mTrack, searchEngine);
+                    	lws.start();
+                    }
+                });
+
+                AlertDialog searchDialog = searchBuilder.create();
+                searchDialog.show();
+            	return true;
+            	
+            case R.id.info_menu_item:
+            	LyricReader reader = new LyricReader(mTrack);
+          		String[] content = reader.getContent();
+            	String info;
+            	if (content[0] == null) {
+            		info = reader.getInfo();
+            	} else {
+            		info = content[0];
+            	}
+            	AlertDialog.Builder infoBuilder = new AlertDialog.Builder(this); 
+            	infoBuilder.setTitle(mTrack.toString())
+            		.setMessage(info)
+        	        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        	            public void onClick(DialogInterface dialog, int whichButton) {
+        	            	dialog.cancel();
+        	            }
+        	        });
+            	AlertDialog infoDialog = infoBuilder.create();
+            	infoDialog.show();
+            	return true;
+            	
             default:
         		Log.e(TAG, "Got an undefined list item " + item.getTitle());
         		break;

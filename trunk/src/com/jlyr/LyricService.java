@@ -11,16 +11,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.jlyr.util.InternalTrackTransmitter;
 import com.jlyr.util.LyricReader;
 import com.jlyr.util.Lyrics;
+import com.jlyr.util.NowPlaying;
 import com.jlyr.util.Track;
 
 public class LyricService extends Service {
@@ -44,103 +43,20 @@ public class LyricService extends Service {
 			return;
 		}
 		String action = i.getAction();
-		Bundle extras = i.getExtras();
 		
 		if (action.equals(ACTION_PLAYSTATECHANGED)) {
-			if (extras == null) {
-				Log.e(TAG, "Got null extras on playstatechange");
-				return;
+			NowPlaying np = new NowPlaying();
+			mCurrentTrack = np.getTrack();
+			
+			Log.i(TAG, "Hello: " + mCurrentTrack);
+			
+			if (mCurrentTrack == null) {
+				clearNotification();
+			} else {
+				showNotification();
 			}
-			Track.State state = Track.State.valueOf(extras.getString("state"));
-
-			Track track = InternalTrackTransmitter.getLastTrack();
-
-			if (track == null) {
-				Log.e(TAG, "A null track got through!! (Ignoring it)");
-				return;
-			}
-
-			onPlayStateChanged(track, state);
 		} else {
 			Log.e(TAG, "Weird action in onStart: " + action);
-		}
-	}
-
-	private synchronized void onPlayStateChanged(Track track, Track.State state) {
-		Log.d(TAG, "State: " + state.name());
-		if (track.equals(Track.SAME_AS_CURRENT)) {
-			// this only happens for apps implementing Scrobble Droid's API
-			Log.d(TAG, "Got a SAME_AS_CURRENT track");
-			if (mCurrentTrack != null) {
-				track = mCurrentTrack;
-			} else {
-				Log.e(TAG, "Got a SAME_AS_CURRENT track, but current was null!");
-				return;
-			}
-		}
-
-		if (state == Track.State.START || state == Track.State.RESUME) { // start/resume
-			if (mCurrentTrack != null) {
-				// Clear previous notification
-				clearNotification();
-			}
-
-			mCurrentTrack = track;
-			// Show notification
-			showNotification();
-		} else if (state == Track.State.PAUSE) { // pause
-			if (mCurrentTrack == null) {
-				// just ignore the track
-			} else {
-				if (!track.equals(mCurrentTrack)) {
-					Log.e(TAG, "PStopped track doesn't equal currentTrack!");
-					Log.e(TAG, "t: " + track);
-					Log.e(TAG, "c: " + mCurrentTrack);
-				} else {
-					// Do nothing
-				}
-			}
-		} else if (state == Track.State.COMPLETE) { // "complete"
-			// TODO test this state
-			if (mCurrentTrack == null) {
-				// just ignore the track
-			} else {
-				if (!track.equals(mCurrentTrack)) {
-					Log.e(TAG, "CStopped track doesn't equal currentTrack!");
-					Log.e(TAG, "t: " + track);
-					Log.e(TAG, "c: " + mCurrentTrack);
-				} else {
-					// Clear previous notification
-					clearNotification();
-					mCurrentTrack = null;
-				}
-			}
-		} else if (state == Track.State.PLAYLIST_FINISHED) { // playlist end
-			if (mCurrentTrack == null) {
-				// Clear previous notification
-				clearNotification();
-			} else {
-				if (!track.equals(mCurrentTrack)) {
-					Log.e(TAG, "PFStopped track doesn't equal currentTrack!");
-					Log.e(TAG, "t: " + track);
-					Log.e(TAG, "c: " + mCurrentTrack);
-				} else {
-					// Clear previous notification
-					clearNotification();
-				}
-			}
-
-			mCurrentTrack = null;
-		} else if (state == Track.State.UNKNOWN_NONPLAYING) {
-			// similar to PAUSE, but might scrobble if close enough
-			if (mCurrentTrack == null) {
-				// just ignore the track
-			} else {
-				// Clear or ignore previous notification
-				clearNotification();
-			}
-		} else {
-			Log.e(TAG, "Unknown track state: " + state.toString());
 		}
 	}
 	
@@ -211,12 +127,16 @@ public class LyricService extends Service {
 				case Lyrics.DID_LOAD:
 					if (useNotification()) {
 						doShowNotification();
+					} else {
+						clearNotification();
 					}
 					break;
 				case Lyrics.DID_FAIL:
 				case Lyrics.DID_ERROR:
 					if (useNotification()) {
 						doShowNotification();
+					} else {
+						clearNotification();
 					}
 					break;
 				case Lyrics.IS_TRYING:
@@ -234,6 +154,8 @@ public class LyricService extends Service {
 			lyrics.loadLyrics(getLoadHandler(lyrics));
 		} else if (useNotification()) {
 			doShowNotification();
+		} else {
+			clearNotification();
 		}
 	}
 	
@@ -250,7 +172,7 @@ public class LyricService extends Service {
 		
 		Context context = getApplicationContext();
 		CharSequence contentTitle = getText(R.string.notification_title);
-		CharSequence contentText = mCurrentTrack.getArtist() + " - " + mCurrentTrack.getTitle();
+		CharSequence contentText = mCurrentTrack.toString();
 		
 		Intent notificationIntent = new Intent(this, LyricViewer.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
