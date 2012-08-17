@@ -52,7 +52,7 @@ This one is here for testing. You don't need to use it. It will always fail.
 
 = List of to-be-added Providers =
 
-== LyricsMode ==
+== !LyricsMode ==
 
 There are many options I am considering to get lyrics from [http://www.lyricsmode.com/ LyricsMode]:
 
@@ -61,7 +61,7 @@ There are many options I am considering to get lyrics from [http://www.lyricsmod
   * Search via the website's search system, but the outcome is not guaranteed to be the lyrics page (might be the search results page).
 
 
-== LyricsFreak ==
+== !LyricsFreak ==
 
 To get lyrics from [http://www.lyricsfreak.com/ LyricsFreak]:
 
@@ -69,7 +69,7 @@ To get lyrics from [http://www.lyricsfreak.com/ LyricsFreak]:
   * Parse the page (easily parsed too, `div#content_h`).
 
 
-== LyricsBay ==
+== !LyricsBay ==
 
 To get the lyrics from [http://www.lyricsbay.com/ LyricsBay]:
 
@@ -77,21 +77,21 @@ To get the lyrics from [http://www.lyricsbay.com/ LyricsBay]:
   * Parse the page (might not be easy, only classes used).
 
 
-== SongLyrics ==
+== !SongLyrics ==
 
 To get the lyrics from [http://www.songlyrics.com/ SongLyrics]:
   * Search via [http://www.duckduckgo.com DuckDuckGo] to find the URL, or try to generate it.
   * Parse the page (easy, `p#songLyricsDiv`).
 
 
-== DarkLyrics ==
+== !DarkLyrics ==
 
 The problem with [http://www.darklyrics.com/ DarkLyrics] is that the pages are not one per song, but one per album. So, searching/finding might not be so easy.
 
 
-== Wikia ==
+== !WikiaLyrics ==
 
-It has an API, but only gives partial lyrics, so I would need to parse the page as usual... unless I find how their app is doing it, and see if it can be done too...
+[http://lyrics.wikia.com/Lyrics_Wiki WikiaLyrics] has an API, but only gives partial lyrics, so I would need to parse the page as usual... unless I find how their app is doing it, and see if it can be done too...
 
 = Providers Suggestions =
 
@@ -101,4 +101,4 @@ If you can know how to parse it (HTML structure, regular expression, or whatever
 
 = Thanks =
 
-I want to thank lots of lyrics plugin, for players like songbird, exaile, banshee, foobar, and much more which I can't remember, for finding ways to parse and/or generate lyrics url and using the APIs.
+I want to thank lots of lyrics plugin, for players like songbird, exaile, banshee, foobar, and much more which I can't remember, for finding ways to parse and/or generate lyrics url and using the APIs AND [http://www.duckduckgo.com/ DuckDuckGo], of course. I won't thank those providers which don't have an API for the public to use.
