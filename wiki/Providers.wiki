@@ -13,12 +13,12 @@ JLyr fetches lyrics from multiple sources, either via an API provided by the web
 
 To get the lyrics from [http://www.azlyrics.com/ AZLyrics]:
 
-  * Search for the lyrics on their site via DuckDuckGo.
+  * Search for the lyrics on their site via [http://www.duckduckgo.com/ DuckDuckGo].
   * Parse the web page to find the lyrics.
 
-This relies on DuckDuckGo for searching for the song on AZLyrics. Failure to find lyrics _might_ be due to DuckDuckGo not finding them (although this is most likely not the case). I am working on an alternative.
+This relies on [http://www.duckduckgo.com/ DuckDuckGo] for searching for the song on AZLyrics. Failure to find lyrics _might_ be due to !DuckDuckGo not finding them (although this is most likely not the case). I am working on an alternative. Meanwhile, if you find the lyrics on the website but not via the app, please report it.
 
-== MetroLyrics ==
+== !MetroLyrics ==
 
 To get the lyrics from [http://www.metrolyrics.com/ MetroLyrics]:
 
@@ -38,11 +38,11 @@ This relies on their API for searching and fetching, so it might "find" a song's
 
 Also, I've been noticing that the website is often down. If fetching lyrics is slow, try disabling this source, as it may be slowing down the providers which come after it.
 
-== ChartLyrics ==
+== !ChartLyrics ==
 
 To get the lyrics from [http://www.chartlyrics.com/ ChartLyrics]:
 
-  * Search and get the lyrics directly from ChartLyrics.
+  * Search and get the lyrics directly from !ChartLyrics.
 
 This relies on their API for searching and fetching, so it might "find" a song's lyrics, even if it's not a 100% percent match. (A sanity check will be included in future releases). This is actually happening more frequently than LyrDB: it finds a song that is not near at all.
 
