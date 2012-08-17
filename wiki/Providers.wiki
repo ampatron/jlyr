@@ -1,0 +1,51 @@
+#summary List of Lyrics Providers
+#labels Phase-Support,Phase-Implementation
+
+= Introduction =
+
+JLyr fetches lyrics from multiple sources, either via an API provided by the website, or by parsing the webpage you would usually see on the web.
+
+
+= Providers List =
+
+
+== AZLyrics ==
+
+To get the lyrics from [http://www.azlyrics.com/ AZLyrics]:
+
+  * Search for the lyrics on their site via DuckDuckGo.
+  * Parse the web page to find the lyrics.
+
+This relies on DuckDuckGo for searching for the song on AZLyrics. Failure to find lyrics _might_ be due to DuckDuckGo not finding them (although this is most likely not the case). I am working on an alternative.
+
+== MetroLyrics ==
+
+To get the lyrics from [http://www.metrolyrics.com/ MetroLyrics]:
+
+  * Generate the URL dynamically.
+  * Parse the web page to find the lyrics.
+
+This method involves a lot of parsing and might not be fool-proof. If there are any problems displaying the lyrics, or not finding them even  though they are on the website, please report.
+
+== LyrDB ==
+
+To get the lyrics from [http://www.lyrdb.com/ LyrDB]:
+
+  * Search for the song via their API.
+  * Get the lyrics directly.
+
+This relies on their API for searching and fetching, so it might "find" a song's lyrics, even if it's not a 100% percent match. (A sanity check will be included in future releases).
+
+Also, I've been noticing that the website is often down. If fetching lyrics is slow, try disabling this source, as it may be slowing down the providers which come after it.
+
+== ChartLyrics ==
+
+To get the lyrics from [http://www.chartlyrics.com/ ChartLyrics]:
+
+  * Search and get the lyrics directly from ChartLyrics.
+
+This relies on their API for searching and fetching, so it might "find" a song's lyrics, even if it's not a 100% percent match. (A sanity check will be included in future releases). This is actually happening more frequently than LyrDB: it finds a song that is not near at all.
+
+== Dummy ==
+
+This one is here for testing. You don't need to use it. It will always fail.
