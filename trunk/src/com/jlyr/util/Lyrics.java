@@ -1,7 +1,6 @@
 package com.jlyr.util;
 
 import com.jlyr.providers.LyricsProvider;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -10,20 +9,20 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class Lyrics {
 	Track mTrack = null;
 	LyricReader mReader = null;
 	String mLyrics = null;
 	String[] mSources = null;
-	Handler mLyrHandler = null;
+	protected Handler mLyrHandler = null;
+
 	boolean mAutoSave = false;
 	
 	Context mContext;
 	
 	LyricsProvider[] mProviders = null;
-	int mProviderIndex = -1;
+	protected int mProviderIndex = -1;
 	
 	public static final String TAG = "JLyrLyrics";
 	
@@ -63,9 +62,17 @@ public class Lyrics {
 		mSources = sources;
 		mAutoSave = (autoSave == null)? useAutoSave() : autoSave;
 		
-		mReader = new LyricReader(mTrack);
+		setReader(null);
 		loadProviders(mSources);
 		mLyrics = null;
+	}
+	
+	protected void setReader(LyricReader reader) {
+		if (reader == null)
+			mReader = new LyricReader(mTrack);
+		else
+			mReader = reader;
+
 	}
 	
 	private void loadProviders(String[] sources) {
@@ -78,7 +85,7 @@ public class Lyrics {
 	}
 	
 	public void loadLyrics(Handler lyr_handler) {
-		String[] content = mReader.getContent();
+		String[] content = mReader.getContent();//load from file first
 		mLyrics = content[1];
 		mLyrHandler = lyr_handler;
 		
@@ -86,14 +93,14 @@ public class Lyrics {
 	    	Log.i(TAG, "Lyrics not found on disk. Fetching...");
 	        fetchLyrics();
 		} else {
-			Message message = Message.obtain(mLyrHandler, Lyrics.DID_LOAD);
+			Message message = Message.obtain(mLyrHandler, Lyrics.DID_LOAD);//resut from file
     		mLyrHandler.sendMessage(message);
 		}
 	}
 	
 	public void fetchLyrics() {
 		if (!canFetchLyrics()) {
-			Message message = Message.obtain(mLyrHandler, Lyrics.DID_FAIL);
+			Message message = Message.obtain(mLyrHandler, Lyrics.DID_FAIL);//no connection
     		mLyrHandler.sendMessage(message);
 			return;
 		}
@@ -107,10 +114,10 @@ public class Lyrics {
 		mReader.save(mLyrics, source);
 	}
 	
-	private void useNextProvider() {
+	protected void useNextProvider() {
 		mProviderIndex++;
 		if (mProviderIndex >= mProviders.length) {
-			Message message = Message.obtain(mLyrHandler, Lyrics.DID_FAIL);
+			Message message = Message.obtain(mLyrHandler, Lyrics.DID_FAIL);//done with all providers
     		mLyrHandler.sendMessage(message);
 			return;
 		}
@@ -171,7 +178,7 @@ public class Lyrics {
 				Log.i(TAG, "Will not save.");
 			}
 			
-			Message message = Message.obtain(mLyrHandler, Lyrics.DID_LOAD, provider.getSource());
+			Message message = Message.obtain(mLyrHandler, Lyrics.DID_LOAD, provider.getSource());//result from providers
     		mLyrHandler.sendMessage(message);
 		} else {
 			Log.e(TAG, "Lyrics is null!");
@@ -198,7 +205,7 @@ public class Lyrics {
 		return auto_save;
 	}
 	
-	private boolean canFetchLyrics() {
+	protected boolean canFetchLyrics() {
 		ConnectivityManager connManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mNetwork = connManager.getActiveNetworkInfo();
 		

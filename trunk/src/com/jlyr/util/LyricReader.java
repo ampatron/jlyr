@@ -10,10 +10,9 @@ import java.io.OutputStreamWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
-
-import com.jlyr.util.Track;
 
 public class LyricReader {
 	
@@ -21,11 +20,19 @@ public class LyricReader {
 	File mFile = null;
 	String mSource = null;
 	
-	public static final String TAG = "JLyrReader";
+	boolean fromCache;
 	
+	public static final String TAG = "JLyrReader";
+
 	public LyricReader(Track track) {
 		mTrack = track;
 		getLyricsFileFromTrack();
+	}
+	
+	public LyricReader(Track track, Context context, boolean fromCache) {
+		mTrack = track;
+		this.fromCache = fromCache;
+		getLyricsFileFromTrack(context);
 	}
 	
 	public LyricReader(File file) {
@@ -48,7 +55,17 @@ public class LyricReader {
         return file;
 	}
 	
-	private void getLyricsFileFromTrack() {
+	public File getLyricsDir(Context context) {
+		if (fromCache && context != null)
+			return context.getCacheDir();
+		else return Environment.getExternalStorageDirectory();
+	}
+	
+	public void getLyricsFileFromTrack() {
+		getLyricsFileFromTrack(null);
+	}
+
+	public void getLyricsFileFromTrack(Context context) {
 		if (mTrack == null) {
 			Log.e(TAG, "Track is null. Cannot get lyrics file.");
 			return;
@@ -56,9 +73,14 @@ public class LyricReader {
 			Log.e(TAG, "File is not null. Cannot get lyrics file.");
 			return;
 		}
-		File path = Environment.getExternalStorageDirectory();
-		String filename = md5(mTrack.getArtist() + " - " + mTrack.getTitle()); 
-        mFile = new File(path, "JLyr/" + filename + ".txt");
+		String filename = getFileNameForTrack(mTrack);
+		mFile = new File(getLyricsDir(context), "JLyr/" + filename + ".txt");
+	}
+	
+	public static String getFileNameForTrack(Track track) {
+		if (track == null)
+			return null;
+		return md5(track.getArtist() + " - " + track.getTitle());
 	}
 	
 	private void getTrackFromLyricsFile() {
@@ -139,11 +161,11 @@ public class LyricReader {
 		save(response, null);
 	}
 	
-	public void save(String response, String source) {
+	public boolean save(String response, String source) {
         Log.i(TAG, "Saving lyrics to " + mFile.getAbsolutePath());
         if (mFile.canWrite()) {
         	Log.w(TAG, "Cannot write to file");
-        	return;
+        	return false;
         }
         String eol = System.getProperty("line.separator");
         
@@ -160,8 +182,10 @@ public class LyricReader {
         	outWriter.append(response);
         	outWriter.close();
             out.close();
+            return true;
         } catch (IOException e) {
         	Log.w(TAG, "Error writing to file", e);
+        	return false;
         } 
 	}
 	

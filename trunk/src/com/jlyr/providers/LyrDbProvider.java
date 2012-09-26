@@ -1,12 +1,12 @@
 package com.jlyr.providers;
 
-import com.jlyr.util.Track;
-
-import edu.gvsu.masl.asynchttp.HttpConnection;
-
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+
+import com.jlyr.util.Track;
+
+import edu.gvsu.masl.asynchttp.HttpConnection;
 
 public class LyrDbProvider extends LyricsProvider {
 	
@@ -42,7 +42,7 @@ public class LyrDbProvider extends LyricsProvider {
 						Log.i(TAG, "LyrDB id not found in: " + response);
 						mLyrics = null;
 						
-						doFail();
+						doFail();//no lyrics
 						return;
 					}
 					
@@ -55,7 +55,7 @@ public class LyrDbProvider extends LyricsProvider {
 					Exception e = (Exception) message.obj;
 					// TODO: try e.toString() maybe it gives more detail about the error
 					// Otherwise find a way to use printStackTrace()
-					Log.e(TAG, "Error: " + e.getMessage());
+					Log.e(TAG, "Error: " + e.getMessage());//no lyrics
 					
 					mLyrics = null;
 					
