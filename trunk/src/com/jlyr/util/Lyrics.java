@@ -26,11 +26,11 @@ public class Lyrics {
 	
 	public static final String TAG = "JLyrLyrics";
 	
-	public static final int DID_LOAD = 0;
-	public static final int DID_TRY = 1;
-	public static final int DID_ERROR = 2;
-	public static final int DID_FAIL = 3;
-	public static final int IS_TRYING = 4;
+	public static final int DID_LOAD = 0; //has lyrics
+	public static final int DID_TRY = 1; //tried provider but failed
+	public static final int DID_ERROR = 2; //error in connection
+	public static final int DID_FAIL = 3; //has response but no lyrics or no connection from the start
+	public static final int IS_TRYING = 4; //trying a specific provider
 	
 	public Lyrics(Context context, Track track) {
 		init(context, track, null, false);
@@ -93,7 +93,7 @@ public class Lyrics {
 	    	Log.i(TAG, "Lyrics not found on disk. Fetching...");
 	        fetchLyrics();
 		} else {
-			Message message = Message.obtain(mLyrHandler, Lyrics.DID_LOAD);//resut from file
+			Message message = Message.obtain(mLyrHandler, Lyrics.DID_LOAD);//result from file
     		mLyrHandler.sendMessage(message);
 		}
 	}

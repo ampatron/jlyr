@@ -11,6 +11,7 @@ import org.apache.http.params.HttpConnectionParams;
 
 import android.graphics.*;
 import android.os.*;
+import android.util.Log;
 
 /**
  * Asynchronous HTTP connections
@@ -101,7 +102,9 @@ public class HttpConnection implements Runnable {
 			}
 			if (method < BITMAP)
 				processEntity(response.getEntity());
+			Log.i("HttpConnection", "Response: "+response.getStatusLine().getStatusCode()+" - "+response.getStatusLine().getReasonPhrase());
 		} catch (Exception e) {
+			Log.e("HttpConnection", "Caught Exception: "+e);
 			handler.sendMessage(Message.obtain(handler,
 					HttpConnection.DID_ERROR, e));
 		}
